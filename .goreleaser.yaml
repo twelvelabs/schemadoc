@@ -1,0 +1,89 @@
+project_name: schemadoc
+
+before:
+  hooks:
+    - go mod tidy
+    - go generate ./...
+    - ./bin/build-completions.sh {{ .ProjectName }}
+    - ./bin/build-manpages.sh {{ .ProjectName }}
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    # `flags`, `ldflags`, and `mod_timestamp` are configured for reproducible builds.
+    # See: https://goreleaser.com/customization/builds/#reproducible-builds
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.CommitDate}}
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
+archives:
+  - id: default
+    builds_info:
+      group: root
+      owner: root
+    files:
+      - README.md
+      - LICENSE
+      - src: build/completions/*
+        dst: completions
+        strip_parent: true
+      - src: build/manpages/*
+        dst: manpages
+        strip_parent: true
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    rlcp: true
+
+brews:
+  - tap:
+      owner: twelvelabs
+      name: homebrew-tap
+      branch: main
+    folder: Formula
+    homepage: "https://github.com/twelvelabs/schemadoc"
+    description: "Generate markdown documents from JSON schema files"
+    license: "MIT"
+    install: |-
+      bin.install "schemadoc"
+      bash_completion.install "completions/schemadoc.bash" => "schemadoc"
+      zsh_completion.install "completions/schemadoc.zsh" => "_envctl"
+      fish_completion.install "completions/schemadoc.fish"
+      man1.install "manpages/schemadoc.1.gz"
+    test: |
+      system "#{bin}/schemadoc --version"
+
+checksum:
+  name_template: "checksums.txt"
+  algorithm: sha256
+
+gomod:
+  proxy: true
+
+report_sizes: true
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next" # cspell: disable-line
+
+changelog:
+  use: github
+  sort: asc
+  groups:
+    - title: New features
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: Bug fixes
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 10
+    - title: Other work
+      order: 99

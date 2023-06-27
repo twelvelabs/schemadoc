@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -o errexit -o errtrace -o nounset -o pipefail
+
+echo "Running .git/hooks/pre-commit"
+
+# Run all staged paths through stylist.
+# Note:
+# - `read` syntax re: https://www.shellcheck.net/wiki/SC2046
+# - `diff-filter=d` excludes deleted paths.
+read -ra staged_paths < <(git diff --diff-filter=d --name-only --staged | xargs)
+if [ ! ${#staged_paths[@]} -eq 0 ]; then
+    stylist check "${staged_paths[@]}"
+fi

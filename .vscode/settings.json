@@ -1,0 +1,35 @@
+{
+    "editor.formatOnSave": true,
+    "editor.rulers": [
+        120
+    ],
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "go.coverOnSave": true,
+    "go.coverOnSingleTest": true,
+    "go.coverOnSingleTestFile": true,
+    "go.coverShowCounts": true,
+    "go.coverageDecorator": {
+        "coveredGutterStyle": "blockgreen",
+        "type": "gutter",
+        "uncoveredGutterStyle": "blockred"
+    },
+    "go.diagnostic.vulncheck": "Imports",
+    "go.generateTestsFlags": [
+        "--template=testify"
+    ],
+    "go.lintOnSave": "package",
+    "go.lintTool": "golangci-lint",
+    "go.useLanguageServer": true,
+    "gopls": {
+        "local": "github.com/twelvelabs/schemadoc",
+        "ui.semanticTokens": true
+    },
+    "shellcheck.customArgs": [
+        "--check-sourced",
+        "--external-sources",
+        "--source-path=SCRIPTDIR"
+    ],
+    "shellcheck.enable": true,
+    "shellformat.useEditorConfig": true
+}

@@ -1,0 +1,44 @@
+excludes:
+  - build/**
+  - dist/**
+  - .cspellcache
+output:
+  show_context: true
+  show_url: true
+  syntax_highlight: true
+processors:
+  - preset: cspell
+  - preset: gitleaks
+  - preset: markdownlint
+  - preset: shellcheck
+  - preset: shfmt
+  - preset: gofmt
+  - preset: golangci-lint
+
+  - name: actionlint
+    includes:
+      - ".github/workflows/*.{yaml,yml}"
+    check:
+      command: "actionlint --format '{{json .}}'"
+      input: variadic
+      output: stdout
+      format: json
+      mapping:
+        level: "error"
+        path: "{{ .filepath }}"
+        start_line: "{{ .line }}"
+        start_column: "{{ .column }}"
+        end_line: "{{ .line }}"
+        end_column: "{{ .end_column }}"
+        rule_id: "{{ .kind }}"
+        rule_name: "{{ .kind }}"
+        rule_description: "{{ .message }}"
+
+  - name: pin-github-action
+    includes:
+      - ".github/workflows/*.{yaml,yml}"
+    fix:
+      command: pin-github-action
+      input: variadic
+      output: stdout
+      format: none

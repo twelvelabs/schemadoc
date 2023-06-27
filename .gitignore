@@ -1,0 +1,6 @@
+.DS_Store
+.cspellcache
+.env
+coverage.out
+build/
+dist/
