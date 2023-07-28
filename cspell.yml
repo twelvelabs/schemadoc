@@ -24,6 +24,7 @@ ignorePaths:
   - .golangci.yml
   - go.mod
   - go.sum
+  - "**/testdata/**"
 ignoreRegExpList:
   - /import \([^)]+\)/g
 language: en
@@ -34,14 +35,18 @@ words:
   - codecov
   - containedctx
   - coverprofile
+  - depctl
   - devcontainer
   - dotfiles
-  - schemadoc
+  - flect
+  - fsutil
   - ghaction
   - gitleaks
   - gitlint
   - gocovsh
+  - gocritic
   - gofmt
+  - gojsonpointer
   - golangci
   - golangci-lint
   - gomod
@@ -51,16 +56,24 @@ words:
   - hadolint
   - ifeq
   - ifneq
+  - jsonschema
+  - mapset
   - markdownlint
+  - nestif
   - nolint
   - noreply
   - oneof
   - orlangure
+  - Pascalize
   - pflag
   - rlcp
+  - SAST
+  - schemadoc
   - shellcheck
   - shfmt
   - signingkey
   - sigstore
+  - simplejson
+  - tablewriter
   - trimpath
   - twelvelabs

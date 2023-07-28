@@ -1,0 +1,95 @@
+---
+dependencies:
+  default:
+    - name: actionlint
+      install: brew install actionlint
+      description: Static checker for GitHub Actions workflow files.
+      url: https://github.com/rhysd/actionlint
+
+    - name: gh
+      install: brew install gh
+      description: GitHub's official command line tool.
+      url: https://github.com/cli/cli
+
+    - name: git
+      install: brew install git
+      description: Distributed version control system.
+      url: https://git-scm.com
+
+    - name: gitleaks
+      install: brew install gitleaks
+      description: SAST tool for detecting hardcoded secrets in git repos.
+      url: https://github.com/gitleaks/gitleaks
+
+    - name: go
+      install: brew install go
+      description: The Go programming language.
+      url: https://github.com/golang/go
+
+    - name: gocovsh
+      install: brew install orlangure/tap/gocovsh
+      description: Tool for exploring Go Coverage reports from the command line.
+      url: https://github.com/orlangure/gocovsh
+
+    - name: golangci-lint
+      install: brew install golangci-lint
+      description: Fast linters runner for Go.
+      url: https://github.com/golangci/golangci-lint
+
+    - name: goreleaser
+      install: brew install goreleaser
+      description: Deliver Go binaries as fast and easily as possible.
+      url: https://github.com/goreleaser/goreleaser
+
+    - name: gum
+      install: brew install gum
+      description: A tool for glamorous shell scripts.
+      url: https://github.com/charmbracelet/gum
+
+    - name: jq
+      install: brew install jq
+      description: Command-line JSON processor.
+      url: https://github.com/jqlang/jq
+
+    - name: npm
+      install: brew install npm
+      description: The package manager for JavaScript.
+      url: https://github.com/npm/cli
+
+    - name: shellcheck
+      install: brew install shellcheck
+      description: A static analysis tool for shell scripts.
+      url: https://github.com/koalaman/shellcheck
+
+    - name: shfmt
+      install: brew install shfmt
+      description: A shell parser, formatter, and interpreter.
+      url: https://github.com/mvdan/sh
+
+    - name: stylist
+      install: brew install twelvelabs/tap/stylist
+      description: Manage all your code quality tools with a single executable.
+      url: https://github.com/twelvelabs/stylist
+
+    - name: cspell
+      install: npm install --global --no-audit --no-fund --quiet cspell
+      description: A Spell Checker for Code.
+      url: https://github.com/streetsidesoftware/cspell
+
+    - name: markdownlint
+      install: npm install --global --no-audit --no-fund --quiet markdownlint-cli
+      description: MarkdownLint command line interface.
+      url: https://github.com/igorshubovych/markdownlint-cli
+
+    - name: pin-github-action
+      install: npm install --global --no-audit --no-fund --quiet pin-github-action
+      description: Pin your GitHub actions to a specific hash.
+      url: https://github.com/mheap/pin-github-action
+
+  ci: []
+
+  local:
+    - name: gitlint
+      install: brew install gitlint
+      description: Linting for your git commit messages.
+      url: https://github.com/jorisroovers/gitlint

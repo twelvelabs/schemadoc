@@ -1,0 +1,17 @@
+{
+    "$id": "https://example.com/ref.schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "RefSchema",
+    "$ref": "#/definitions/ConcreteSchema",
+    "definitions": {
+        "ConcreteSchema": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The display name"
+                }
+            }
+        }
+    }
+}

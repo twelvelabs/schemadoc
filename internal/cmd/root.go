@@ -30,11 +30,6 @@ func NewRootCmd(app *core.App) *cobra.Command {
 			}
 			return app.Init()
 		},
-		RunE: func(cmd *cobra.Command, args []string) error {
-			name := app.UI.Cyan("schemadoc")
-			app.UI.Out("Hello from %s 👋 \n", name)
-			return nil
-		},
 		SilenceUsage: true,
 		CompletionOptions: cobra.CompletionOptions{
 			HiddenDefaultCmd: true,
@@ -49,6 +44,7 @@ func NewRootCmd(app *core.App) *cobra.Command {
 
 	cmd.SetVersionTemplate("{{.Version}}\n")
 
+	cmd.AddCommand(NewGenCmd(app))
 	cmd.AddCommand(NewManCmd(app))
 	cmd.AddCommand(NewVersionCmd(app))
 

@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Homebrew
-        uses: homebrew/actions/setup-homebrew@a1377360f443cba4201fe7a591d1c60ba7ddab7a # pin@master
+        uses: homebrew/actions/setup-homebrew@9e809e528c6aae1b87ed30f5d81fe75d0bfc6f38 # pin@master
 
       - name: Set up Go
         uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # pin@v4.0.0

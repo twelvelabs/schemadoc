@@ -57,7 +57,7 @@ brews:
     install: |-
       bin.install "schemadoc"
       bash_completion.install "completions/schemadoc.bash" => "schemadoc"
-      zsh_completion.install "completions/schemadoc.zsh" => "_envctl"
+      zsh_completion.install "completions/schemadoc.zsh" => "_schemadoc"
       fish_completion.install "completions/schemadoc.fish"
       man1.install "manpages/schemadoc.1.gz"
     test: |

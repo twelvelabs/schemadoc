@@ -1,6 +1,7 @@
 excludes:
   - build/**
   - dist/**
+  - out/**
   - .cspellcache
 output:
   show_context: true

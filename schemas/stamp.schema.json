@@ -1,0 +1,453 @@
+{
+    "$id": "https://raw.githubusercontent.com/twelvelabs/stamp/main/docs/stamp.schema.json",
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "title": "Generator",
+    "description": "Stamp generator metadata.",
+    "definitions": {
+        "Action": {
+            "title": "Action",
+            "description": "Action enum.",
+            "enum": [
+                "append",
+                "prepend",
+                "replace",
+                "delete"
+            ],
+            "type": "string"
+        },
+        "ConflictConfig": {
+            "title": "ConflictConfig",
+            "description": "ConflictConfig enum.",
+            "enum": [
+                "keep",
+                "replace",
+                "prompt"
+            ],
+            "type": "string"
+        },
+        "CreateTask": {
+            "title": "CreateTask",
+            "description": "Creates a new file in the destination directory.",
+            "additionalProperties": false,
+            "properties": {
+                "dst": {
+                    "$ref": "#/definitions/Destination"
+                },
+                "each": {
+                    "description": "Set to a comma separated value and the task will be executued once per-item. On each iteration, the `_Item` and `_Index` values will be set accordingly.",
+                    "type": "string"
+                },
+                "if": {
+                    "description": "Determines whether the task should be executed. The value must be coercible to a boolean.",
+                    "default": "true",
+                    "type": "string"
+                },
+                "src": {
+                    "$ref": "#/definitions/Source"
+                },
+                "type": {
+                    "description": "Creates a new file in the destination directory.",
+                    "const": "create",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "DataType": {
+            "title": "DataType",
+            "description": "DataType enum.",
+            "enum": [
+                "bool",
+                "int",
+                "intSlice",
+                "string",
+                "stringSlice"
+            ],
+            "type": "string"
+        },
+        "DeleteTask": {
+            "title": "DeleteTask",
+            "description": "Deletes a file in the destination directory.",
+            "additionalProperties": false,
+            "properties": {
+                "dst": {
+                    "$ref": "#/definitions/Destination"
+                },
+                "each": {
+                    "description": "Set to a comma separated value and the task will be executued once per-item. On each iteration, the `_Item` and `_Index` values will be set accordingly.",
+                    "type": "string"
+                },
+                "if": {
+                    "description": "Determines whether the task should be executed. The value must be coercible to a boolean.",
+                    "default": "true",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "Deletes a file in the destination directory.",
+                    "const": "delete",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Destination": {
+            "title": "Destination",
+            "description": "The destination path.",
+            "additionalProperties": false,
+            "properties": {
+                "conflict": {
+                    "$ref": "#/definitions/ConflictConfig",
+                    "default": "prompt"
+                },
+                "content_type": {
+                    "description": "An explicit content type. Inferred from the file extension by default.",
+                    "enum": [
+                        "json",
+                        "yaml",
+                        "text"
+                    ],
+                    "type": "string"
+                },
+                "missing": {
+                    "$ref": "#/definitions/MissingConfig",
+                    "default": "ignore"
+                },
+                "mode": {
+                    "description": "An optional POSIX file mode to set on the file path.",
+                    "default": "0666",
+                    "examples": [
+                        "0755",
+                        "{{ .ModeValue }}"
+                    ],
+                    "pattern": "\\{\\{(.*)\\}\\}|\\d{4}",
+                    "type": "string"
+                },
+                "path": {
+                    "description": "The file path relative to the destination directory. Attempts to traverse outside the destination directory will raise a runtime error",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "FileType": {
+            "title": "FileType",
+            "description": "FileType enum.",
+            "enum": [
+                "json",
+                "yaml",
+                "text"
+            ],
+            "type": "string"
+        },
+        "GeneratorTask": {
+            "title": "GeneratorTask",
+            "description": "Executes another generator.",
+            "additionalProperties": false,
+            "required": [
+                "name",
+                "type"
+            ],
+            "properties": {
+                "each": {
+                    "description": "Set to a comma separated value and the task will be executued once per-item. On each iteration, the `_Item` and `_Index` values will be set accordingly.",
+                    "type": "string"
+                },
+                "if": {
+                    "description": "Determines whether the task should be executed. The value must be coercible to a boolean.",
+                    "default": "true",
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "description": "Executes another generator.",
+                    "const": "generator",
+                    "type": "string"
+                },
+                "values": {
+                    "default": {},
+                    "type": [
+                        "object",
+                        "null"
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "InputMode": {
+            "title": "InputMode",
+            "description": "InputMode enum.",
+            "enum": [
+                "arg",
+                "flag",
+                "hidden"
+            ],
+            "type": "string"
+        },
+        "MatchSource": {
+            "title": "MatchSource",
+            "description": "MatchSource enum.",
+            "enum": [
+                "file",
+                "line"
+            ],
+            "type": "string"
+        },
+        "MergeType": {
+            "title": "MergeType",
+            "description": "MergeType enum.",
+            "enum": [
+                "concat",
+                "upsert",
+                "replace"
+            ],
+            "type": "string"
+        },
+        "MissingConfig": {
+            "title": "MissingConfig",
+            "description": "MissingConfig enum.",
+            "enum": [
+                "ignore",
+                "touch",
+                "error"
+            ],
+            "type": "string"
+        },
+        "PromptConfig": {
+            "title": "PromptConfig",
+            "description": "PromptConfig enum.",
+            "enum": [
+                "always",
+                "never",
+                "on-empty",
+                "on-unset"
+            ],
+            "type": "string"
+        },
+        "Source": {
+            "title": "Source",
+            "description": "The source path or inline content.",
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/SourceWithContent"
+                },
+                {
+                    "$ref": "#/definitions/SourceWithPath"
+                }
+            ]
+        },
+        "SourceWithContent": {
+            "description": "The source content.",
+            "required": [
+                "content"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "content": {
+                    "description": "Inline content. Can be any type. String keys and/or values will be rendered as templates."
+                },
+                "content_type": {
+                    "$ref": "#/definitions/FileType"
+                }
+            },
+            "type": "object"
+        },
+        "SourceWithPath": {
+            "description": "The source path.",
+            "required": [
+                "path"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "content_type": {
+                    "$ref": "#/definitions/FileType"
+                },
+                "path": {
+                    "description": "The file path relative to the source directory. Attempts to traverse outside the source directory will raise a runtime error.",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "TaskSchema": {
+            "title": "Task",
+            "description": "A generator task.",
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/CreateTask"
+                },
+                {
+                    "$ref": "#/definitions/DeleteTask"
+                },
+                {
+                    "$ref": "#/definitions/GeneratorTask"
+                },
+                {
+                    "$ref": "#/definitions/UpdateTask"
+                }
+            ]
+        },
+        "UpdateAction": {
+            "title": "UpdateAction",
+            "description": "The action to perform on the destination.",
+            "additionalProperties": false,
+            "properties": {
+                "merge": {
+                    "$ref": "#/definitions/MergeType",
+                    "default": "concat"
+                },
+                "type": {
+                    "$ref": "#/definitions/Action",
+                    "default": "replace"
+                }
+            },
+            "type": "object"
+        },
+        "UpdateMatch": {
+            "title": "Match",
+            "description": "Target a subset of the destination to update.",
+            "additionalProperties": false,
+            "properties": {
+                "default": {
+                    "description": "A default value to use if the JSON path expression is not found."
+                },
+                "pattern": {
+                    "description": "A regexp or JSON path expression.",
+                    "default": "",
+                    "type": "string"
+                },
+                "source": {
+                    "$ref": "#/definitions/MatchSource",
+                    "default": "line"
+                }
+            },
+            "type": "object"
+        },
+        "UpdateTask": {
+            "title": "UpdateTask",
+            "description": "Updates a file in the destination directory.",
+            "additionalProperties": false,
+            "properties": {
+                "action": {
+                    "$ref": "#/definitions/UpdateAction"
+                },
+                "description": {
+                    "description": "An optional description of what is being updated.",
+                    "type": "string"
+                },
+                "dst": {
+                    "$ref": "#/definitions/Destination"
+                },
+                "each": {
+                    "description": "Set to a comma separated value and the task will be executued once per-item. On each iteration, the `_Item` and `_Index` values will be set accordingly.",
+                    "type": "string"
+                },
+                "if": {
+                    "description": "Determines whether the task should be executed. The value must be coercible to a boolean.",
+                    "default": "true",
+                    "type": "string"
+                },
+                "match": {
+                    "$ref": "#/definitions/UpdateMatch"
+                },
+                "src": {
+                    "$ref": "#/definitions/Source"
+                },
+                "type": {
+                    "description": "Updates a file in the destination directory.",
+                    "const": "update",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Value": {
+            "title": "Value",
+            "description": "A generator input value.",
+            "additionalProperties": false,
+            "properties": {
+                "default": {},
+                "flag": {
+                    "type": "string"
+                },
+                "help": {
+                    "type": "string"
+                },
+                "if": {
+                    "default": "true",
+                    "type": "string"
+                },
+                "key": {
+                    "type": "string"
+                },
+                "mode": {
+                    "$ref": "#/definitions/InputMode",
+                    "default": "flag"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "options": {
+                    "default": [],
+                    "items": {},
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "prompt": {
+                    "$ref": "#/definitions/PromptConfig",
+                    "default": "on-unset"
+                },
+                "transform": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/DataType",
+                    "default": "string"
+                },
+                "validate": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "properties": {
+        "description": {
+            "description": "The generator description. The first line is shown when listing all generators. The full description is used when viewing generator help/usage text.",
+            "type": "string"
+        },
+        "name": {
+            "description": "The generator name.",
+            "minLength": 1,
+            "pattern": "^[\\w:_-]+$",
+            "type": "string"
+        },
+        "tasks": {
+            "items": {
+                "$ref": "#/definitions/TaskSchema"
+            },
+            "type": [
+                "array",
+                "null"
+            ]
+        },
+        "values": {
+            "items": {
+                "$ref": "#/definitions/Value"
+            },
+            "type": [
+                "array",
+                "null"
+            ]
+        }
+    },
+    "required": [
+        "name"
+    ],
+    "type": "object"
+}

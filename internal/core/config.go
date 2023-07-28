@@ -11,15 +11,15 @@ import (
 
 const (
 	ConfigPathDefault = ".schemadoc.yaml"
-	ConfigPathEnv     = "ENVCTL_CONFIG"
+	ConfigPathEnv     = "SCHEMADOC_CONFIG"
 )
 
 type Config struct {
 	ConfigPath string
-	Color      bool   `yaml:"color" env:"ENVCTL_COLOR" default:"true"`
-	Debug      bool   `yaml:"debug" env:"ENVCTL_DEBUG"`
-	Prompt     bool   `yaml:"prompt" env:"ENVCTL_PROMPT" default:"true"`
-	LogLevel   string `yaml:"log_level" env:"ENVCTL_LOG_LEVEL" default:"warn" validate:"oneof=debug info warn error fatal"`
+	Color      bool   `yaml:"color" env:"SCHEMADOC_COLOR" default:"true"`
+	Debug      bool   `yaml:"debug" env:"SCHEMADOC_DEBUG"`
+	Prompt     bool   `yaml:"prompt" env:"SCHEMADOC_PROMPT" default:"true"`
+	LogLevel   string `yaml:"log_level" env:"SCHEMADOC_LOG_LEVEL" default:"warn" validate:"oneof=debug info warn error fatal"` //nolint: lll
 }
 
 // NewTestConfig returns a new Config for unit tests

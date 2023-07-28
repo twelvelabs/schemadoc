@@ -26,7 +26,7 @@ jobs:
           token: ${{ github.ref_name == 'main' && secrets.GH_PAT || secrets.GITHUB_TOKEN }}
 
       - name: Set up Homebrew
-        uses: homebrew/actions/setup-homebrew@a1377360f443cba4201fe7a591d1c60ba7ddab7a # pin@master
+        uses: homebrew/actions/setup-homebrew@9e809e528c6aae1b87ed30f5d81fe75d0bfc6f38 # pin@master
 
       - name: Set up Go
         uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # pin@v4.0.0
@@ -50,6 +50,7 @@ jobs:
 
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@111c56156bcc6918c056dbef52164cfa583dc549 # pin@v5.2.0
+        if: github.ref_name == 'main'
         with:
           gpg_private_key: ${{ secrets.GH_COMMIT_SIGNING_KEY }}
           passphrase: ${{ secrets.GH_COMMIT_SIGNING_PASS }}
@@ -61,7 +62,7 @@ jobs:
       - name: Create release tag
         # Change to support different release channels
         # Versions from a non-main branch will look like: `v.0.0.0-branch-name`.
-        if: contains(fromJSON('["main", "beta"]'), github.ref_name)
+        if: github.ref_name == 'main'
         run: make release-tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
