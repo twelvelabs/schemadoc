@@ -18,7 +18,7 @@ var Templates embed.FS
 // Schema represents a JSON schema document.
 type Schema struct {
 	AdditionalItems       *Schema            `json:"additionalItems,omitempty"`
-	AdditionalProperties  bool               `json:"additionalProperties,omitempty"`
+	AdditionalProperties  any                `json:"additionalProperties,omitempty"`
 	AllOf                 []*Schema          `json:"allOf,omitempty"`
 	AnyOf                 []*Schema          `json:"anyOf,omitempty"`
 	Comment               string             `json:"$comment,omitempty"`
