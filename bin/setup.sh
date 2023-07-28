@@ -20,13 +20,7 @@ if [[ "${CI:-}" == "true" ]]; then
 else
     depctl up local
 
-    # Ensure git repos.
-    SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
-    if [[ -f "${SCRIPT_DIR}/setup-repos.sh" ]]; then
-        source "${SCRIPT_DIR}/setup-repos.sh"
-    fi
-
-    # Ensure local repo hooks.
+    # Ensure git hooks.
     if [[ -d .git ]]; then
         echo "Updating .git/hooks."
         mkdir -p .git/hooks

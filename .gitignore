@@ -5,5 +5,3 @@ coverage.out
 build/
 dist/
 out/
-
-bin/setup-repos.sh

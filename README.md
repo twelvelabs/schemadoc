@@ -1,7 +1,7 @@
 # schemadoc
 
 [![build](https://github.com/twelvelabs/schemadoc/actions/workflows/build.yml/badge.svg)](https://github.com/twelvelabs/schemadoc/actions/workflows/build.yml)
-[![codecov](https://codecov.io/gh/twelvelabs/schemadoc/branch/main/graph/badge.svg?token=jLMxTJcY08)](https://codecov.io/gh/twelvelabs/schemadoc)
+[![codecov](https://codecov.io/gh/twelvelabs/schemadoc/branch/main/graph/badge.svg)](https://codecov.io/gh/twelvelabs/schemadoc)
 
 Generate markdown documents from JSON schema files ✨.
 
@@ -24,7 +24,13 @@ Choose one of the following:
 
 ## Usage
 
-TODO
+```bash
+# Renders `./my.schema.json` to `./out/SchemaTitle.md`.
+schemadoc gen --in ./my.schema.json
+
+# Renders all json schema files in `./schemas` to `./docs`.
+schemadoc gen --in ./schemas --out ./docs
+```
 
 ## Development
 
