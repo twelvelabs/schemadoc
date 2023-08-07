@@ -3,7 +3,7 @@ module github.com/twelvelabs/schemadoc
 go 1.20
 
 require (
-	github.com/charmbracelet/log v0.2.2
+	github.com/charmbracelet/log v0.2.3
 	github.com/creasty/defaults v1.7.0
 	github.com/gobuffalo/flect v1.0.2
 	github.com/muesli/mango-cobra v1.2.0
