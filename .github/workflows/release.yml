@@ -24,7 +24,7 @@ jobs:
         uses: homebrew/actions/setup-homebrew@9e809e528c6aae1b87ed30f5d81fe75d0bfc6f38 # pin@master
 
       - name: Set up Go
-        uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753 # pin@v4.0.1
+        uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe # pin@v4.1.0
         with:
           go-version-file: go.mod
 
