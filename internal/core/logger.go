@@ -19,9 +19,10 @@ func NewLogger(ios *ui.IOStreams, config *Config) *Logger {
 	if config.Debug {
 		level = "debug"
 	}
+	parsedLevel, _ := log.ParseLevel(level)
 	return &Logger{
 		Logger: log.NewWithOptions(ios.Err, log.Options{
-			Level:           log.ParseLevel(level),
+			Level:           parsedLevel,
 			ReportCaller:    true,
 			ReportTimestamp: true,
 			TimeFormat:      time.Kitchen,

@@ -21,6 +21,7 @@ linters:
     - paralleltest
     - tagalign
     - tagliatelle
+    - testifylint
     - testpackage
     - varnamelen
     - wrapcheck
@@ -46,6 +47,10 @@ linters-settings:
       - standard # Standard section: captures all standard packages.
       - default # Default section: contains all imports that could not be matched to another section type.
       - prefix(github.com/twelvelabs/schemadoc) # Custom section: groups all imports with the specified Prefix.
+
+  gomoddirectives:
+    replace-allow-list:
+      - github.com/imdario/mergo
 
   lll:
     line-length: 120
