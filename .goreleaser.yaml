@@ -43,10 +43,9 @@ archives:
     format_overrides:
       - goos: windows
         format: zip
-    rlcp: true
 
 brews:
-  - tap:
+  - repository:
       owner: twelvelabs
       name: homebrew-tap
       branch: main
@@ -67,8 +66,8 @@ checksum:
   name_template: "checksums.txt"
   algorithm: sha256
 
-gomod:
-  proxy: true
+# gomod:
+#   proxy: true
 
 report_sizes: true
 
