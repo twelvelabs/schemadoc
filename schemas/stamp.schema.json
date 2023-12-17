@@ -6,24 +6,35 @@
     "definitions": {
         "Action": {
             "title": "Action",
-            "description": "Action enum.",
+            "description": "Determines what type of modification to perform.\n\nThe append/prepend behavior differs slightly depending on\nthe destination content type. Strings are concatenated,\nnumbers are added, and objects are recursively merged.\nArrays are concatenated by default, but that behavior can\nbe customized via the 'merge' enum.\n\nReplace and delete behave consistently across all types.",
             "enum": [
                 "append",
                 "prepend",
                 "replace",
                 "delete"
             ],
-            "type": "string"
+            "type": "string",
+            "enumDescriptions": [
+                "Append to the destination content.",
+                "Prepend to the destination content.",
+                "Replace the destination.",
+                "Delete the destination content."
+            ]
         },
         "ConflictConfig": {
             "title": "ConflictConfig",
-            "description": "ConflictConfig enum.",
+            "description": "ConflictConfig determines what to do when destination paths already exist.",
             "enum": [
                 "keep",
                 "replace",
                 "prompt"
             ],
-            "type": "string"
+            "type": "string",
+            "enumDescriptions": [
+                "Keep the existing path.",
+                "Replace the existing path.",
+                "Prompt the user."
+            ]
         },
         "CreateTask": {
             "title": "CreateTask",
@@ -35,11 +46,20 @@
                 },
                 "each": {
                     "description": "Set to a comma separated value and the task will be executued once per-item. On each iteration, the `_Item` and `_Index` values will be set accordingly.",
+                    "examples": [
+                        "foo, bar, baz",
+                        "{{ .SomeList | join \",\" }}"
+                    ],
                     "type": "string"
                 },
                 "if": {
-                    "description": "Determines whether the task should be executed. The value must be coercible to a boolean.",
+                    "description": "Determines whether the task should be executed. The value must be [coercible](https://pkg.go.dev/strconv#ParseBool) to a boolean.",
                     "default": "true",
+                    "examples": [
+                        "0",
+                        "true",
+                        "{{ .SomeBool }}"
+                    ],
                     "type": "string"
                 },
                 "src": {
@@ -55,7 +75,7 @@
         },
         "DataType": {
             "title": "DataType",
-            "description": "DataType enum.",
+            "description": "DataType is the data type of a value.",
             "enum": [
                 "bool",
                 "int",
@@ -63,7 +83,14 @@
                 "string",
                 "stringSlice"
             ],
-            "type": "string"
+            "type": "string",
+            "enumDescriptions": [
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
         },
         "DeleteTask": {
             "title": "DeleteTask",
@@ -75,11 +102,20 @@
                 },
                 "each": {
                     "description": "Set to a comma separated value and the task will be executued once per-item. On each iteration, the `_Item` and `_Index` values will be set accordingly.",
+                    "examples": [
+                        "foo, bar, baz",
+                        "{{ .SomeList | join \",\" }}"
+                    ],
                     "type": "string"
                 },
                 "if": {
-                    "description": "Determines whether the task should be executed. The value must be coercible to a boolean.",
+                    "description": "Determines whether the task should be executed. The value must be [coercible](https://pkg.go.dev/strconv#ParseBool) to a boolean.",
                     "default": "true",
+                    "examples": [
+                        "0",
+                        "true",
+                        "{{ .SomeBool }}"
+                    ],
                     "type": "string"
                 },
                 "type": {
@@ -113,7 +149,7 @@
                     "default": "ignore"
                 },
                 "mode": {
-                    "description": "An optional POSIX file mode to set on the file path.",
+                    "description": "An optional [POSIX mode](https://en.wikipedia.org/wiki/File-system_permissions#Numeric_notation) to set on the file path.",
                     "default": "0666",
                     "examples": [
                         "0755",
@@ -131,30 +167,40 @@
         },
         "FileType": {
             "title": "FileType",
-            "description": "FileType enum.",
+            "description": "FileType specifies the content type of the destination path.",
             "enum": [
                 "json",
                 "yaml",
                 "text"
             ],
-            "type": "string"
+            "type": "string",
+            "enumDescriptions": [
+                "",
+                "",
+                ""
+            ]
         },
         "GeneratorTask": {
             "title": "GeneratorTask",
             "description": "Executes another generator.",
             "additionalProperties": false,
-            "required": [
-                "name",
-                "type"
-            ],
             "properties": {
                 "each": {
                     "description": "Set to a comma separated value and the task will be executued once per-item. On each iteration, the `_Item` and `_Index` values will be set accordingly.",
+                    "examples": [
+                        "foo, bar, baz",
+                        "{{ .SomeList | join \",\" }}"
+                    ],
                     "type": "string"
                 },
                 "if": {
-                    "description": "Determines whether the task should be executed. The value must be coercible to a boolean.",
+                    "description": "Determines whether the task should be executed. The value must be [coercible](https://pkg.go.dev/strconv#ParseBool) to a boolean.",
                     "default": "true",
+                    "examples": [
+                        "0",
+                        "true",
+                        "{{ .SomeBool }}"
+                    ],
                     "type": "string"
                 },
                 "name": {
@@ -167,6 +213,7 @@
                 },
                 "values": {
                     "default": {},
+                    "additionalProperties": {},
                     "type": [
                         "object",
                         "null"
@@ -177,53 +224,78 @@
         },
         "InputMode": {
             "title": "InputMode",
-            "description": "InputMode enum.",
+            "description": "InputMode determines whether the value is a flag or positional argument.",
             "enum": [
                 "arg",
                 "flag",
                 "hidden"
             ],
-            "type": "string"
+            "type": "string",
+            "enumDescriptions": [
+                "",
+                "",
+                ""
+            ]
         },
         "MatchSource": {
             "title": "MatchSource",
-            "description": "MatchSource enum.",
+            "description": "MatchSource determines how match patterns should be applied.",
             "enum": [
                 "file",
                 "line"
             ],
-            "type": "string"
+            "type": "string",
+            "enumDescriptions": [
+                "Match the entire file.",
+                "Match each line."
+            ]
         },
         "MergeType": {
             "title": "MergeType",
-            "description": "MergeType enum.",
+            "description": "Determines merge behavior for arrays - either when modifying them directly\nor when recursively merging objects containing arrays.",
             "enum": [
                 "concat",
                 "upsert",
                 "replace"
             ],
-            "type": "string"
+            "type": "string",
+            "enumDescriptions": [
+                "Concatenate source and destination arrays.",
+                "Add source array items if not present in the destination.",
+                "Replace the destination with the source."
+            ]
         },
         "MissingConfig": {
             "title": "MissingConfig",
-            "description": "MissingConfig enum.",
+            "description": "MissingConfig determines what to do when destination paths are missing.",
             "enum": [
                 "ignore",
                 "touch",
                 "error"
             ],
-            "type": "string"
+            "type": "string",
+            "enumDescriptions": [
+                "Do nothing.",
+                "Create an empty file.",
+                "Raise an error."
+            ]
         },
         "PromptConfig": {
             "title": "PromptConfig",
-            "description": "PromptConfig enum.",
+            "description": "PromptConfig determines when a value should prompt.",
             "enum": [
                 "always",
                 "never",
                 "on-empty",
                 "on-unset"
             ],
-            "type": "string"
+            "type": "string",
+            "enumDescriptions": [
+                "",
+                "",
+                "",
+                ""
+            ]
         },
         "Source": {
             "title": "Source",
@@ -239,6 +311,7 @@
             ]
         },
         "SourceWithContent": {
+            "title": "Source Content",
             "description": "The source content.",
             "required": [
                 "content"
@@ -255,6 +328,7 @@
             "type": "object"
         },
         "SourceWithPath": {
+            "title": "Source Path",
             "description": "The source path.",
             "required": [
                 "path"
@@ -291,7 +365,7 @@
             ]
         },
         "UpdateAction": {
-            "title": "UpdateAction",
+            "title": "Action",
             "description": "The action to perform on the destination.",
             "additionalProperties": false,
             "properties": {
@@ -343,11 +417,20 @@
                 },
                 "each": {
                     "description": "Set to a comma separated value and the task will be executued once per-item. On each iteration, the `_Item` and `_Index` values will be set accordingly.",
+                    "examples": [
+                        "foo, bar, baz",
+                        "{{ .SomeList | join \",\" }}"
+                    ],
                     "type": "string"
                 },
                 "if": {
-                    "description": "Determines whether the task should be executed. The value must be coercible to a boolean.",
+                    "description": "Determines whether the task should be executed. The value must be [coercible](https://pkg.go.dev/strconv#ParseBool) to a boolean.",
                     "default": "true",
+                    "examples": [
+                        "0",
+                        "true",
+                        "{{ .SomeBool }}"
+                    ],
                     "type": "string"
                 },
                 "match": {
@@ -428,6 +511,7 @@
             "type": "string"
         },
         "tasks": {
+            "description": "A list of generator tasks.",
             "items": {
                 "$ref": "#/definitions/TaskSchema"
             },
@@ -437,6 +521,7 @@
             ]
         },
         "values": {
+            "description": "A list of generator input values.",
             "items": {
                 "$ref": "#/definitions/Value"
             },
@@ -446,8 +531,5 @@
             ]
         }
     },
-    "required": [
-        "name"
-    ],
     "type": "object"
 }

@@ -122,6 +122,48 @@ func TestSchema_EntityName(t *testing.T) {
 	require.Equal("Bar", schema.EntityName())
 }
 
+func TestSchema_EnumMarkdown(t *testing.T) {
+	require := require.New(t)
+
+	schema := Schema{}
+	require.Equal("", schema.EnumMarkdown())
+
+	schema = Schema{
+		Enum: []Any{
+			{"one"},
+			{"two"},
+		},
+	}
+	require.Equal(" * `one`\n * `two`", schema.EnumMarkdown())
+
+	schema = Schema{
+		Enum: []Any{
+			{"one"},
+			{"two"},
+		},
+		EnumDescriptions: []string{
+			"the first number",
+			"the second number",
+		},
+	}
+	require.Equal(" * `one`: the first number\n * `two`: the second number", schema.EnumMarkdown())
+}
+
+func TestSchema_ExamplesMarkdown(t *testing.T) {
+	require := require.New(t)
+
+	schema := Schema{}
+	require.Equal("", schema.ExamplesMarkdown())
+
+	schema = Schema{
+		Examples: []Any{
+			{"example one"},
+			{"example two"},
+		},
+	}
+	require.Equal(" * `example one`\n * `example two`", schema.ExamplesMarkdown())
+}
+
 func TestSchema_GenPath(t *testing.T) {
 	require := require.New(t)
 
@@ -202,6 +244,7 @@ func TestSchema_Merge(t *testing.T) {
 			"description":           true,
 			"else":                  true,
 			"enum":                  true,
+			"enumDescriptions":      true,
 			"examples":              true,
 			"exclusiveMaximum":      true,
 			"exclusiveMinimum":      true,

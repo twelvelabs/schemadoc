@@ -49,6 +49,7 @@ words:
   - gojsonpointer
   - golangci
   - golangci-lint
+  - goldmark
   - gomod
   - goreleaser
   - gpgconf
@@ -59,6 +60,7 @@ words:
   - jsonschema
   - mapset
   - markdownlint
+  - minifier
   - nestif
   - nolint
   - noreply

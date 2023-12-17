@@ -1,13 +1,13 @@
 {{ define "ConstTpl" -}}
-{{ if .String }}<br><br>Allowed value:<br>• {{ .String }}{{ end -}}
+{{ if .String }}<p>Allowed value:</p><ul><li><code>{{ .String }}</code></li></ul>{{ end -}}
 {{ end -}}
 
 {{ define "EnumTpl" -}}
-{{ if . }}<br><br>Allowed values:<br>
-{{- $items := list -}}
-{{- range $e := . }}{{ $items = cat "•" $e.String | append $items }}{{ end -}}
-{{- $items | join "<br>" -}}
+{{ if . }}<p>Allowed values:</p>{{ . | toHTML }}{{ end -}}
 {{ end -}}
+
+{{ define "ExamplesTpl" -}}
+{{ if . }}<p>Examples:</p>{{ . | toHTML }}{{ end -}}
 {{ end -}}
 
 {{ define "PropertiesTpl" -}}
@@ -16,7 +16,7 @@
 | -------- | ---- | -------- | ------- | ----------- |
 {{ $propParent := . -}}
 {{ range $key, $prop := $propParent.Properties -}}
-| `{{ $key }}` | {{ $prop.TypeInfoMarkdown }} | {{ if $propParent.RequiredKey $key }}✅{{ end }} | {{ $prop.Default }} | {{ $prop.Description }}{{ template "ConstTpl" $prop.Const }}{{ template "EnumTpl" $prop.Enum }} |
+| `{{ $key }}` | {{ $prop.TypeInfoMarkdown }} | {{ if $propParent.RequiredKey $key }}✅{{ end }} | {{ $prop.Default }} | {{ $prop.Description | toHTML }}{{ template "ConstTpl" $prop.Const }}{{ template "EnumTpl" $prop.EnumMarkdown }}{{ template "ExamplesTpl" $prop.ExamplesMarkdown }} |
 {{ end }}
 {{ end -}}
 {{ end -}}
