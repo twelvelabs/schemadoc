@@ -18,7 +18,12 @@ import (
 
 	"github.com/twelvelabs/schemadoc/internal/core"
 	"github.com/twelvelabs/schemadoc/internal/jsonschema"
+	"github.com/twelvelabs/schemadoc/internal/markdown"
 )
+
+func init() {
+	render.FuncMap["toHTML"] = markdown.ToHTMLString
+}
 
 func NewGenCmd(app *core.App) *cobra.Command {
 	a := &GenAction{

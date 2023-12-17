@@ -32,6 +32,7 @@ type Schema struct {
 	Description           string             `json:"description,omitempty"`
 	Else                  *Schema            `json:"else,omitempty"`
 	Enum                  []Any              `json:"enum,omitempty"`
+	EnumDescriptions      []string           `json:"enumDescriptions,omitempty"`
 	Examples              []Any              `json:"examples,omitempty"`
 	ExclusiveMaximum      float64            `json:"exclusiveMaximum,omitempty"`
 	ExclusiveMinimum      float64            `json:"exclusiveMinimum,omitempty"`
@@ -164,6 +165,43 @@ func (s *Schema) EnsureDocument() {
 	}
 }
 
+// EnumMarkdown returns the enum and enum descriptions
+// formatted as a markdown list.
+func (s *Schema) EnumMarkdown() string {
+	items := []string{}
+
+	for idx, enum := range s.Enum {
+		desc := ""
+		if idx < len(s.EnumDescriptions) {
+			desc = s.EnumDescriptions[idx]
+		}
+		item := " * `" + enum.String() + "`"
+		if desc != "" {
+			item += ": " + desc
+		}
+		items = append(items, item)
+	}
+
+	if len(items) == 0 {
+		return ""
+	}
+	return strings.Join(items, "\n")
+}
+
+// ExamplesMarkdown returns the examples as a markdown list.
+func (s *Schema) ExamplesMarkdown() string {
+	items := []string{}
+
+	for _, example := range s.Examples {
+		items = append(items, fmt.Sprintf(" * `%s`", example.String()))
+	}
+
+	if len(items) == 0 {
+		return ""
+	}
+	return strings.Join(items, "\n")
+}
+
 // Merge merges fields from other into the receiver.
 func (s *Schema) Merge(other *Schema) {
 	s.EnsureDocument()
@@ -205,6 +243,8 @@ func (s *Schema) Merge(other *Schema) {
 			s.Else = other.Else
 		case "enum":
 			s.Enum = other.Enum
+		case "enumDescriptions":
+			s.EnumDescriptions = other.EnumDescriptions
 		case "examples":
 			s.Examples = other.Examples
 		case "exclusiveMaximum":
