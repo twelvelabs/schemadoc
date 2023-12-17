@@ -24,13 +24,34 @@ Choose one of the following:
 
 ## Usage
 
-```bash
+```shell
 # Renders `./my.schema.json` to `./out/SchemaTitle.md`.
 schemadoc gen --in ./my.schema.json
 
 # Renders all json schema files in `./schemas` to `./docs`.
 schemadoc gen --in ./schemas --out ./docs
 ```
+
+To see schemadoc in action, check out
+[Generator.md](https://github.com/twelvelabs/stamp/blob/main/docs/Generator.md)
+which is rendered from
+[stamp.schema.json](https://github.com/twelvelabs/stamp/blob/main/docs/stamp.schema.json)
+at build time.
+
+## Customizing
+
+Schemadoc ships with a built in [template](./internal/jsonschema/templates/markdown.tpl.md) for rendering markdown.
+To customize (or render something other than markdown)
+you can supply your own Go [text/template](https://pkg.go.dev/text/template) file:
+
+```shell
+schemadoc gen --in ./schemas --out ./dest --template path/to/my-xml-template.tpl --outfile "{{ .EntityName }}.xml"
+```
+
+Each top-level JSON schema in `./schemas` will be parsed into a
+[Schema](./internal/jsonschema/schema.go) struct and passed into
+`my-xml-template.tpl`.
+The rendered files will be written to `./dest/$SchemaName.xml`.
 
 ## Development
 
