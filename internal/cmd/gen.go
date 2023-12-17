@@ -29,6 +29,9 @@ func NewGenCmd(app *core.App) *cobra.Command {
 	a := &GenAction{
 		App: app,
 	}
+	if err := defaults.Set(a); err != nil {
+		panic(err)
+	}
 
 	cmd := &cobra.Command{
 		Use:   "gen",
@@ -42,7 +45,8 @@ func NewGenCmd(app *core.App) *cobra.Command {
 	flags := cmd.Flags()
 	flags.StringVarP(&a.InPath, "in", "i", a.InPath, "file path or dir to one or more JSON schema files")
 	flags.StringVarP(&a.OutDir, "out", "o", a.OutDir, "output dir to generate files to")
-	flags.StringVarP(&a.TemplatePath, "template", "t", a.TemplatePath, "optional template path")
+	flags.StringVarP(&a.OutFile, "outfile", "f", a.OutFile, "custom filename pattern for generated files")
+	flags.StringVarP(&a.TemplatePath, "template", "t", a.TemplatePath, "custom template path")
 
 	return cmd
 }
@@ -52,6 +56,7 @@ type GenAction struct {
 
 	InPath       string `validate:"required"`
 	OutDir       string `validate:"required" default:"out"`
+	OutFile      string `validate:"required" default:"{{ .EntityName }}.md"`
 	SchemaPaths  []string
 	TemplatePath string
 }
@@ -93,8 +98,12 @@ func (a *GenAction) Run(_ context.Context, _ []string) error {
 			return err
 		}
 
-		renderedPath := filepath.Join(a.OutDir, fmt.Sprintf("%s.md", scm.EntityName()))
-		if err := os.WriteFile(renderedPath, []byte(rendered), fsutil.DefaultFileMode); err != nil {
+		outFile, err := render.String(a.OutFile, scm)
+		if err != nil {
+			return err
+		}
+		outPath := filepath.Join(a.OutDir, outFile)
+		if err := os.WriteFile(outPath, []byte(rendered), fsutil.DefaultFileMode); err != nil {
 			return err
 		}
 	}
@@ -105,13 +114,11 @@ func (a *GenAction) Run(_ context.Context, _ []string) error {
 func (a *GenAction) setup() error {
 	start := time.Now()
 
-	if err := defaults.Set(a); err != nil {
-		return err
-	}
 	if err := validate.Struct(a); err != nil {
 		msg := err.Error()
 		msg = strings.ReplaceAll(msg, "InPath", `'--in'`)
 		msg = strings.ReplaceAll(msg, "OutDir", `'--out'`)
+		msg = strings.ReplaceAll(msg, "OutFile", `'--outfile'`)
 		msg = strings.ReplaceAll(msg, "field", "flag")
 		return fmt.Errorf(msg)
 	}
@@ -150,6 +157,7 @@ func (a *GenAction) setup() error {
 		"duration", time.Since(start),
 		"in", a.SchemaPaths,
 		"out", a.OutDir,
+		"outfile", a.OutFile,
 		"template", a.TemplatePath,
 	)
 	return nil
