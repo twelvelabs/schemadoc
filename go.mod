@@ -12,7 +12,7 @@ require (
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.4
-	github.com/tdewolff/minify/v2 v2.20.9
+	github.com/tdewolff/minify/v2 v2.20.10
 	github.com/twelvelabs/termite v0.13.1
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190905194746-02993c407bfb
 	github.com/yuin/goldmark v1.6.0
@@ -56,7 +56,7 @@ require (
 	github.com/sergi/go-diff v1.3.1 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/spf13/cast v1.5.1 // indirect
-	github.com/tdewolff/parse/v2 v2.7.6 // indirect
+	github.com/tdewolff/parse/v2 v2.7.7 // indirect
 	golang.org/x/crypto v0.15.0 // indirect
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa // indirect
 	golang.org/x/net v0.18.0 // indirect
