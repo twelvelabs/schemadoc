@@ -16,32 +16,30 @@
 | -------- | ---- | -------- | ------- | ----------- |
 {{ $propParent := . -}}
 {{ range $key, $prop := $propParent.Properties -}}
-| `{{ $key }}` | {{ $prop.TypeInfoMarkdown }} | {{ if $propParent.RequiredKey $key }}✅{{ end }} | {{ $prop.Default }} | {{ $prop.Description | toHTML }}{{ template "ConstTpl" $prop.Const }}{{ template "EnumTpl" $prop.EnumMarkdown }}{{ template "ExamplesTpl" $prop.ExamplesMarkdown }} |
-{{ end }}
+| `{{ $key }}` | {{ $prop.TypeInfoMarkdown }} | {{ if $propParent.RequiredKey $key }}✅{{ end }} | {{ $prop.Default }} | {{ $prop.DescriptionMarkdown | toHTML }}{{ template "ConstTpl" $prop.Const }}{{ template "EnumTpl" $prop.EnumMarkdown }}{{ template "ExamplesTpl" $prop.ExamplesMarkdown }} |
+{{ end -}}
 {{ end -}}
 {{ end -}}
 
 # {{ .EntityName }}
 
-{{ .Description }}
+{{ .DescriptionMarkdown }}
 
 ## {{ .EntityName }} Properties
 
-{{ template "PropertiesTpl" . -}}
-
+{{ template "PropertiesTpl" . }}
 {{ range $key, $def := .Definitions -}}
 {{ if $def.Enum }}{{ continue }}{{ end -}}
 
 ## {{ $def.EntityName }}
 
-{{ $def.Description }}
+{{ $def.DescriptionMarkdown }}
 
 {{ if $def.Properties -}}
 
 ### {{ $def.EntityName }} Properties
 
-{{ template "PropertiesTpl" $def -}}
-
+{{ template "PropertiesTpl" $def }}
 {{ end -}}
 
 {{ if $def.OneOf -}}

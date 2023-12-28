@@ -93,6 +93,27 @@ func TestSchema_RefURI(t *testing.T) {
 	)
 }
 
+func TestSchema_DescriptionMarkdown(t *testing.T) {
+	require := require.New(t)
+
+	// Defaults to empty string.
+	schema := Schema{}
+	require.Equal("", schema.DescriptionMarkdown())
+
+	// Uses `.Description` if present.
+	schema = Schema{
+		Description: "This _could_ be Markdown",
+	}
+	require.Equal("This _could_ be Markdown", schema.DescriptionMarkdown())
+
+	// Uses `.MarkdownDescription` if present.
+	schema = Schema{
+		Description:         "This _could_ be Markdown",
+		MarkdownDescription: "This **is** Markdown",
+	}
+	require.Equal("This **is** Markdown", schema.DescriptionMarkdown())
+}
+
 func TestSchema_EntityName(t *testing.T) {
 	require := require.New(t)
 
@@ -252,6 +273,7 @@ func TestSchema_Merge(t *testing.T) {
 			"$id":                   true,
 			"if":                    true,
 			"items":                 true,
+			"markdownDescription":   true,
 			"maxContains":           true,
 			"maximum":               true,
 			"maxItems":              true,
