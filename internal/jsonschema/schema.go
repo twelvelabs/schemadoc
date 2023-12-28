@@ -40,6 +40,7 @@ type Schema struct {
 	ID                    string             `json:"$id,omitempty"`
 	If                    *Schema            `json:"if,omitempty"`
 	Items                 *Schema            `json:"items,omitempty"`
+	MarkdownDescription   string             `json:"markdownDescription,omitempty"`
 	MaxContains           int                `json:"maxContains,omitempty"`
 	Maximum               float64            `json:"maximum,omitempty"`
 	MaxItems              int                `json:"maxItems,omitempty"`
@@ -123,6 +124,16 @@ func (s *Schema) Clone() (*Schema, error) {
 		return nil, err
 	}
 	return s.Context.parse(doc, s.Parent)
+}
+
+// DescriptionMarkdown returns the schema description formatted as Markdown,
+// Will prioritize the non-standard `markdownDescription` attribute if present,
+// otherwise uses `description`.
+func (s *Schema) DescriptionMarkdown() string {
+	if s.MarkdownDescription != "" {
+		return s.MarkdownDescription
+	}
+	return s.Description
 }
 
 func (s *Schema) EntityName() string {
@@ -259,6 +270,8 @@ func (s *Schema) Merge(other *Schema) {
 			s.If = other.If
 		case "items":
 			s.Items = other.Items
+		case "markdownDescription":
+			s.MarkdownDescription = other.MarkdownDescription
 		case "maxContains":
 			s.MaxContains = other.MaxContains
 		case "maximum":
