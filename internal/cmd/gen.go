@@ -15,6 +15,7 @@ import (
 	"github.com/twelvelabs/termite/fsutil"
 	"github.com/twelvelabs/termite/render"
 	"github.com/twelvelabs/termite/validate"
+	stripmd "github.com/writeas/go-strip-markdown"
 
 	"github.com/twelvelabs/schemadoc/internal/core"
 	"github.com/twelvelabs/schemadoc/internal/jsonschema"
@@ -23,6 +24,9 @@ import (
 
 func init() {
 	render.FuncMap["toHTML"] = markdown.ToHTMLString
+	render.FuncMap["wrapCode"] = markdown.WrapCode
+	render.FuncMap["firstSentence"] = markdown.FirstSentence
+	render.FuncMap["stripMarkdown"] = stripmd.Strip
 }
 
 func NewGenCmd(app *core.App) *cobra.Command {
@@ -56,7 +60,8 @@ type GenAction struct {
 
 	InPath       string `validate:"required"`
 	OutDir       string `validate:"required" default:"out"`
-	OutFile      string `validate:"required" default:"{{ .EntityName }}.md"`
+	OutFile      string `validate:"required" default:"{{ .EntityName | underscore }}.md"`
+	OutFileTpl   render.Template
 	SchemaPaths  []string
 	TemplatePath string
 }
@@ -73,39 +78,51 @@ func (a *GenAction) Run(_ context.Context, _ []string) error {
 		}
 
 		context := jsonschema.NewContext()
-		scm, err := context.Get(path)
+		schema, err := context.Get(path)
 		if err != nil {
 			return err
 		}
+		schema.GenPathTpl = a.OutFileTpl
 
-		var rendered string
-		if a.TemplatePath != "" {
-			rendered, err = render.File(a.TemplatePath, scm)
-		} else {
-			var tpl *template.Template
-			templatePath := "templates/markdown.tpl.md"
-			tpl, err = template.New(filepath.Base(templatePath)).
-				Funcs(render.FuncMap).
-				ParseFS(jsonschema.Templates, templatePath)
-			if err != nil {
+		if err := a.generateSchema(schema); err != nil {
+			return err
+		}
+		for _, subSchema := range schema.Definitions {
+			if err := a.generateSchema(subSchema); err != nil {
 				return err
 			}
-			buf := bytes.Buffer{}
-			err = tpl.Execute(&buf, scm)
-			rendered = buf.String()
 		}
-		if err != nil {
-			return err
-		}
+	}
 
-		outFile, err := render.String(a.OutFile, scm)
+	return nil
+}
+
+func (a *GenAction) generateSchema(schema *jsonschema.Schema) error {
+	var rendered string
+	var err error
+
+	if a.TemplatePath != "" {
+		rendered, err = render.File(a.TemplatePath, schema)
+	} else {
+		var tpl *template.Template
+		templatePath := "templates/markdown.tpl.md"
+		tpl, err = template.New(filepath.Base(templatePath)).
+			Funcs(render.FuncMap).
+			ParseFS(jsonschema.Templates, templatePath)
 		if err != nil {
 			return err
 		}
-		outPath := filepath.Join(a.OutDir, outFile)
-		if err := os.WriteFile(outPath, []byte(rendered), fsutil.DefaultFileMode); err != nil {
-			return err
-		}
+		buf := bytes.Buffer{}
+		err = tpl.Execute(&buf, schema)
+		rendered = buf.String()
+	}
+	if err != nil {
+		return err
+	}
+
+	outPath := filepath.Join(a.OutDir, schema.GenPath())
+	if err := os.WriteFile(outPath, []byte(rendered), 0644); err != nil { //nolint: gosec
+		return err
 	}
 
 	return nil
@@ -141,6 +158,12 @@ func (a *GenAction) setup() error {
 	if err := fsutil.EnsureDirWritable(a.OutDir); err != nil {
 		return fmt.Errorf(`'--out': %w`, err)
 	}
+
+	tpl, err := render.Compile(a.OutFile)
+	if err != nil {
+		return fmt.Errorf(`'--outfile': %w`, err)
+	}
+	a.OutFileTpl = *tpl
 
 	if a.TemplatePath != "" {
 		info, err := os.Stat(a.TemplatePath)

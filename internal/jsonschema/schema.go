@@ -10,6 +10,7 @@ import (
 
 	"github.com/gobuffalo/flect"
 	"github.com/twelvelabs/termite/render"
+	"gopkg.in/yaml.v3"
 )
 
 //go:embed templates/*
@@ -138,7 +139,7 @@ func (s *Schema) DescriptionMarkdown() string {
 
 func (s *Schema) EntityName() string {
 	if s.Title != "" {
-		return s.Title
+		return flect.Pascalize(s.Title)
 	}
 	if s.Key != "" {
 		return flect.Pascalize(s.Key)
@@ -186,7 +187,7 @@ func (s *Schema) EnumMarkdown() string {
 		if idx < len(s.EnumDescriptions) {
 			desc = s.EnumDescriptions[idx]
 		}
-		item := " * `" + enum.String() + "`"
+		item := "- `" + enum.String() + "`"
 		if desc != "" {
 			item += ": " + desc
 		}
@@ -204,7 +205,7 @@ func (s *Schema) ExamplesMarkdown() string {
 	items := []string{}
 
 	for _, example := range s.Examples {
-		items = append(items, fmt.Sprintf(" * `%s`", example.String()))
+		items = append(items, fmt.Sprintf(" * `%s`", example.YAMLString()))
 	}
 
 	if len(items) == 0 {
@@ -487,4 +488,26 @@ func (a Any) String() string {
 		return ""
 	}
 	return fmt.Sprintf("%v", a.value)
+}
+
+func (a Any) JSONString() string {
+	if a.value == nil {
+		return ""
+	}
+	serialized, err := json.Marshal(a.value)
+	if err != nil {
+		return err.Error()
+	}
+	return strings.TrimSpace(string(serialized))
+}
+
+func (a Any) YAMLString() string {
+	if a.value == nil {
+		return ""
+	}
+	serialized, err := yaml.Marshal(a.value)
+	if err != nil {
+		return err.Error()
+	}
+	return strings.TrimSpace(string(serialized))
 }
