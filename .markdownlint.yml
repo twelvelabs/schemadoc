@@ -3,10 +3,7 @@
 # - https://github.com/DavidAnson/markdownlint/blob/main/schema/.markdownlint.yaml
 
 # MD013/line-length - Line length
-MD013:
-  line_length: 120
-  code_blocks: false
-  tables: false
+MD013: false
 
 # MD033/no-inline-html - Inline HTML
 MD033: false
