@@ -28,3 +28,20 @@ func TestToHTMLBytes(t *testing.T) {
 
 	g.Assert(t, filename, []byte(htmlString))
 }
+
+func TestWrapCode(t *testing.T) {
+	require := require.New(t)
+
+	require.Equal("", WrapCode(""))
+	require.Equal("`foo`", WrapCode("foo"))
+	require.Equal("`foo`", WrapCode("\n\nfoo\n\n"))
+}
+
+func TestFirstSentence(t *testing.T) {
+	require := require.New(t)
+
+	require.Equal("", FirstSentence(""))
+	require.Equal("Hello there.", FirstSentence("Hello there"))
+	require.Equal("Hello there.", FirstSentence("Hello there. How are you?"))
+	require.Equal("How are you?", FirstSentence("How are you?"))
+}

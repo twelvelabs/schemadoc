@@ -1,54 +1,92 @@
 {{ define "ConstTpl" -}}
-{{ if .String }}<p>Allowed value:</p><ul><li><code>{{ .String }}</code></li></ul>{{ end -}}
+{{ if . -}}
+
+Allowed Value:
+
+- `{{ . }}`
+
+{{ end -}}
+{{ end -}}
+
+{{ define "DescriptionTpl" -}}
+{{ if . -}}
+
+{{ . }}
+
+{{ end -}}
 {{ end -}}
 
 {{ define "EnumTpl" -}}
-{{ if . }}<p>Allowed values:</p>{{ . | toHTML }}{{ end -}}
+{{ if . -}}
+
+Allowed Values:
+
+{{ . }}
+
+{{ end -}}
 {{ end -}}
 
 {{ define "ExamplesTpl" -}}
-{{ if . }}<p>Examples:</p>{{ . | toHTML }}{{ end -}}
+{{ if . -}}
+
+Examples:
+
+{{ range $example := . -}}
+
+```yaml
+{{ $example.YAMLString }}
+```
+
+{{ end -}}
+{{ end -}}
 {{ end -}}
 
 {{ define "PropertiesTpl" -}}
 {{ if . -}}
-| Property | Type | Required | Default | Description |
-| -------- | ---- | -------- | ------- | ----------- |
+| Property | Type | Required | Enum | Default | Description |
+| -------- | ---- | -------- | ---- | ------- | ----------- |
 {{ $propParent := . -}}
 {{ range $key, $prop := $propParent.Properties -}}
-| `{{ $key }}` | {{ $prop.TypeInfoMarkdown }} | {{ if $propParent.RequiredKey $key }}✅{{ end }} | {{ $prop.Default }} | {{ $prop.DescriptionMarkdown | toHTML }}{{ template "ConstTpl" $prop.Const }}{{ template "EnumTpl" $prop.EnumMarkdown }}{{ template "ExamplesTpl" $prop.ExamplesMarkdown }} |
+| [`{{ $key }}`](#{{ $key }}) | {{ $prop.TypeInfoMarkdown }} | {{ if $propParent.RequiredKey $key }}✅{{ else }}➖{{ end }} | {{ if $prop.Enum }}✅{{ else }}➖{{ end }} | {{ $prop.Default.JSONString | wrapCode | default "➖" }} | {{ $prop.DescriptionMarkdown | stripMarkdown | firstSentence | toHTML }} |
 {{ end -}}
 {{ end -}}
 {{ end -}}
 
 # {{ .EntityName }}
 
-{{ .DescriptionMarkdown }}
+{{ template "DescriptionTpl" .DescriptionMarkdown }}
+{{ template "ConstTpl" .Const.String }}
+{{ template "EnumTpl" .EnumMarkdown }}
+{{ template "ExamplesTpl" .Examples }}
 
-## {{ .EntityName }} Properties
+{{ if .OneOf -}}
+
+## Variants
+
+{{ range $key, $schema := .OneOf -}}
+
+- [{{ $schema.EntityName }}]({{ $schema.EntityLink }})
+{{ end -}}
+{{ end -}}
+{{ if .Properties -}}
+
+## Properties
 
 {{ template "PropertiesTpl" . }}
-{{ range $key, $def := .Definitions -}}
-{{ if $def.Enum }}{{ continue }}{{ end -}}
 
-## {{ $def.EntityName }}
-
-{{ $def.DescriptionMarkdown }}
-
-{{ if $def.Properties -}}
-
-### {{ $def.EntityName }} Properties
-
-{{ template "PropertiesTpl" $def }}
 {{ end -}}
+{{ $root := . -}}
+{{ range $key, $prop := .Properties -}}
 
-{{ if $def.OneOf -}}
+### `{{ $key }}`
 
-### {{ $def.EntityName }} Variants
+| Type | Required | Enum | Default |
+| ---- | -------- | ---- | ------- |
+| {{ $prop.TypeInfoMarkdown }} | {{ if $root.RequiredKey $key }}✅{{ else }}➖{{ end }} | {{ if $prop.Enum }}✅{{ else }}➖{{ end }} | {{ $prop.Default.JSONString | wrapCode | default "➖" }} |
 
-{{ range $key, $subSchema := $def.OneOf -}}
+{{ template "DescriptionTpl" $prop.DescriptionMarkdown }}
+{{ template "ConstTpl" $prop.Const.String }}
+{{ template "EnumTpl" $prop.EnumMarkdown }}
+{{ template "ExamplesTpl" $prop.Examples }}
 
-- [{{ $subSchema.EntityName }}]({{ $subSchema.EntityLink }})
-{{ end }}
-{{ end -}}
 {{ end -}}

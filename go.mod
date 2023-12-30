@@ -14,8 +14,10 @@ require (
 	github.com/stretchr/testify v1.8.4
 	github.com/tdewolff/minify/v2 v2.20.10
 	github.com/twelvelabs/termite v0.13.1
+	github.com/writeas/go-strip-markdown v2.0.1+incompatible
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190905194746-02993c407bfb
 	github.com/yuin/goldmark v1.6.0
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -63,7 +65,6 @@ require (
 	golang.org/x/sys v0.15.0 // indirect
 	golang.org/x/term v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 replace github.com/imdario/mergo => github.com/imdario/mergo v0.3.16

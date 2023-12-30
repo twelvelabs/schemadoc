@@ -155,7 +155,7 @@ func TestSchema_EnumMarkdown(t *testing.T) {
 			{"two"},
 		},
 	}
-	require.Equal(" * `one`\n * `two`", schema.EnumMarkdown())
+	require.Equal("- `one`\n- `two`", schema.EnumMarkdown())
 
 	schema = Schema{
 		Enum: []Any{
@@ -167,7 +167,7 @@ func TestSchema_EnumMarkdown(t *testing.T) {
 			"the second number",
 		},
 	}
-	require.Equal(" * `one`: the first number\n * `two`: the second number", schema.EnumMarkdown())
+	require.Equal("- `one`: the first number\n- `two`: the second number", schema.EnumMarkdown())
 }
 
 func TestSchema_ExamplesMarkdown(t *testing.T) {

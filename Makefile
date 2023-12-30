@@ -25,6 +25,10 @@ lint: ## Lint the app
 format: ## Format the app
 	@bin/format.sh
 
+.PHONY: run
+run: ## Run the app
+	@bin/run.sh
+
 .PHONY: test
 test: ## Test the app
 	@bin/test.sh

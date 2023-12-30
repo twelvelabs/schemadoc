@@ -3,6 +3,8 @@ package markdown
 import (
 	"bytes"
 	"fmt"
+	"strings"
+	"unicode"
 
 	"github.com/tdewolff/minify/v2"
 	mhtml "github.com/tdewolff/minify/v2/html"
@@ -57,4 +59,27 @@ func ToHTMLBytes(markdown []byte) ([]byte, error) {
 func ToHTMLString(markdown string) (string, error) {
 	buf, err := ToHTMLBytes([]byte(markdown))
 	return string(buf), err
+}
+
+func WrapCode(s string) string {
+	if s == "" {
+		return ""
+	}
+	return "`" + strings.TrimSpace(s) + "`"
+}
+
+func FirstSentence(s string) string {
+	if s == "" {
+		return ""
+	}
+	sentence := strings.TrimSpace(strings.Split(s, ".")[0])
+
+	// Only append punctuation if needed.
+	runes := []rune(sentence)
+	lastRune := runes[len(runes)-1]
+	if !unicode.IsPunct(lastRune) {
+		sentence += "."
+	}
+
+	return sentence
 }
