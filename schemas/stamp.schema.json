@@ -19,11 +19,12 @@
                 "Prepend to the destination content.",
                 "Replace the destination.",
                 "Delete the destination content."
-            ]
+            ],
+            "markdownDescription": "Determines what type of modification to perform.\n\nThe append/prepend behavior differs slightly depending on\nthe destination content type. Strings are concatenated,\nnumbers are added, and objects are recursively merged.\nArrays are concatenated by default, but that behavior can\nbe customized via the 'merge' enum.\n\nReplace and delete behave consistently across all types."
         },
         "ConflictConfig": {
             "title": "ConflictConfig",
-            "description": "ConflictConfig determines what to do when destination paths already exist.",
+            "description": "Determines what to do when creating a new file and\nthe destination path already exists.\n\n_Only used in [CreateTask](create_task.md#createtask)._",
             "enum": [
                 "keep",
                 "replace",
@@ -34,25 +35,35 @@
                 "Keep the existing path.",
                 "Replace the existing path.",
                 "Prompt the user."
-            ]
+            ],
+            "markdownDescription": "Determines what to do when creating a new file and\nthe destination path already exists.\n\n_Only used in [CreateTask](create_task.md#createtask)._"
         },
         "CreateTask": {
             "title": "CreateTask",
             "description": "Creates a new file in the destination directory.",
+            "required": [
+                "dst",
+                "src",
+                "type"
+            ],
             "additionalProperties": false,
             "properties": {
                 "dst": {
-                    "$ref": "#/definitions/Destination"
+                    "$ref": "#/definitions/Destination",
+                    "title": "Destination"
                 },
                 "each": {
+                    "title": "Each",
                     "description": "Set to a comma separated value and the task will be executued once per-item. On each iteration, the `_Item` and `_Index` values will be set accordingly.",
                     "examples": [
                         "foo, bar, baz",
                         "{{ .SomeList | join \",\" }}"
                     ],
-                    "type": "string"
+                    "type": "string",
+                    "markdownDescription": "Set to a comma separated value and the task will be executued once per-item. On each iteration, the `_Item` and `_Index` values will be set accordingly."
                 },
                 "if": {
+                    "title": "If",
                     "description": "Determines whether the task should be executed. The value must be [coercible](https://pkg.go.dev/strconv#ParseBool) to a boolean.",
                     "default": "true",
                     "examples": [
@@ -60,22 +71,27 @@
                         "true",
                         "{{ .SomeBool }}"
                     ],
-                    "type": "string"
+                    "type": "string",
+                    "markdownDescription": "Determines whether the task should be executed. The value must be [coercible](https://pkg.go.dev/strconv#ParseBool) to a boolean."
                 },
                 "src": {
-                    "$ref": "#/definitions/Source"
+                    "$ref": "#/definitions/Source",
+                    "title": "Source"
                 },
                 "type": {
+                    "title": "Type",
                     "description": "Creates a new file in the destination directory.",
                     "const": "create",
-                    "type": "string"
+                    "type": "string",
+                    "markdownDescription": "Creates a new file in the destination directory."
                 }
             },
-            "type": "object"
+            "type": "object",
+            "markdownDescription": "Creates a new file in the destination directory."
         },
         "DataType": {
             "title": "DataType",
-            "description": "DataType is the data type of a value.",
+            "description": "Specifies the data type of a value.",
             "enum": [
                 "bool",
                 "int",
@@ -85,30 +101,39 @@
             ],
             "type": "string",
             "enumDescriptions": [
-                "",
-                "",
-                "",
-                "",
-                ""
-            ]
+                "Boolean.",
+                "Integer.",
+                "Integer array/slice.",
+                "String.",
+                "String array/slice."
+            ],
+            "markdownDescription": "Specifies the data type of a value."
         },
         "DeleteTask": {
             "title": "DeleteTask",
             "description": "Deletes a file in the destination directory.",
+            "required": [
+                "dst",
+                "type"
+            ],
             "additionalProperties": false,
             "properties": {
                 "dst": {
-                    "$ref": "#/definitions/Destination"
+                    "$ref": "#/definitions/Destination",
+                    "title": "Destination"
                 },
                 "each": {
+                    "title": "Each",
                     "description": "Set to a comma separated value and the task will be executued once per-item. On each iteration, the `_Item` and `_Index` values will be set accordingly.",
                     "examples": [
                         "foo, bar, baz",
                         "{{ .SomeList | join \",\" }}"
                     ],
-                    "type": "string"
+                    "type": "string",
+                    "markdownDescription": "Set to a comma separated value and the task will be executued once per-item. On each iteration, the `_Item` and `_Index` values will be set accordingly."
                 },
                 "if": {
+                    "title": "If",
                     "description": "Determines whether the task should be executed. The value must be [coercible](https://pkg.go.dev/strconv#ParseBool) to a boolean.",
                     "default": "true",
                     "examples": [
@@ -116,39 +141,51 @@
                         "true",
                         "{{ .SomeBool }}"
                     ],
-                    "type": "string"
+                    "type": "string",
+                    "markdownDescription": "Determines whether the task should be executed. The value must be [coercible](https://pkg.go.dev/strconv#ParseBool) to a boolean."
                 },
                 "type": {
+                    "title": "Type",
                     "description": "Deletes a file in the destination directory.",
                     "const": "delete",
-                    "type": "string"
+                    "type": "string",
+                    "markdownDescription": "Deletes a file in the destination directory."
                 }
             },
-            "type": "object"
+            "type": "object",
+            "markdownDescription": "Deletes a file in the destination directory."
         },
         "Destination": {
             "title": "Destination",
             "description": "The destination path.",
+            "required": [
+                "path"
+            ],
             "additionalProperties": false,
             "properties": {
                 "conflict": {
                     "$ref": "#/definitions/ConflictConfig",
+                    "title": "Conflict",
                     "default": "prompt"
                 },
                 "content_type": {
+                    "title": "Content Type",
                     "description": "An explicit content type. Inferred from the file extension by default.",
                     "enum": [
                         "json",
                         "yaml",
                         "text"
                     ],
-                    "type": "string"
+                    "type": "string",
+                    "markdownDescription": "An explicit content type. Inferred from the file extension by default."
                 },
                 "missing": {
                     "$ref": "#/definitions/MissingConfig",
+                    "title": "Missing",
                     "default": "ignore"
                 },
                 "mode": {
+                    "title": "Mode",
                     "description": "An optional [POSIX mode](https://en.wikipedia.org/wiki/File-system_permissions#Numeric_notation) to set on the file path.",
                     "default": "0666",
                     "examples": [
@@ -156,18 +193,22 @@
                         "{{ .ModeValue }}"
                     ],
                     "pattern": "\\{\\{(.*)\\}\\}|\\d{4}",
-                    "type": "string"
+                    "type": "string",
+                    "markdownDescription": "An optional [POSIX mode](https://en.wikipedia.org/wiki/File-system_permissions#Numeric_notation) to set on the file path."
                 },
                 "path": {
+                    "title": "Path",
                     "description": "The file path relative to the destination directory. Attempts to traverse outside the destination directory will raise a runtime error",
-                    "type": "string"
+                    "type": "string",
+                    "markdownDescription": "The file path relative to the destination directory. Attempts to traverse outside the destination directory will raise a runtime error"
                 }
             },
-            "type": "object"
+            "type": "object",
+            "markdownDescription": "The destination path."
         },
         "FileType": {
             "title": "FileType",
-            "description": "FileType specifies the content type of the destination path.",
+            "description": "Specifies the content type of the destination path.",
             "enum": [
                 "json",
                 "yaml",
@@ -178,7 +219,8 @@
                 "",
                 "",
                 ""
-            ]
+            ],
+            "markdownDescription": "Specifies the content type of the destination path."
         },
         "GeneratorTask": {
             "title": "GeneratorTask",
@@ -186,14 +228,17 @@
             "additionalProperties": false,
             "properties": {
                 "each": {
+                    "title": "Each",
                     "description": "Set to a comma separated value and the task will be executued once per-item. On each iteration, the `_Item` and `_Index` values will be set accordingly.",
                     "examples": [
                         "foo, bar, baz",
                         "{{ .SomeList | join \",\" }}"
                     ],
-                    "type": "string"
+                    "type": "string",
+                    "markdownDescription": "Set to a comma separated value and the task will be executued once per-item. On each iteration, the `_Item` and `_Index` values will be set accordingly."
                 },
                 "if": {
+                    "title": "If",
                     "description": "Determines whether the task should be executed. The value must be [coercible](https://pkg.go.dev/strconv#ParseBool) to a boolean.",
                     "default": "true",
                     "examples": [
@@ -201,7 +246,8 @@
                         "true",
                         "{{ .SomeBool }}"
                     ],
-                    "type": "string"
+                    "type": "string",
+                    "markdownDescription": "Determines whether the task should be executed. The value must be [coercible](https://pkg.go.dev/strconv#ParseBool) to a boolean."
                 },
                 "name": {
                     "type": "string"
@@ -209,7 +255,8 @@
                 "type": {
                     "description": "Executes another generator.",
                     "const": "generator",
-                    "type": "string"
+                    "type": "string",
+                    "markdownDescription": "Executes another generator."
                 },
                 "values": {
                     "default": {},
@@ -220,11 +267,12 @@
                     ]
                 }
             },
-            "type": "object"
+            "type": "object",
+            "markdownDescription": "Executes another generator."
         },
         "InputMode": {
             "title": "InputMode",
-            "description": "InputMode determines whether the value is a flag or positional argument.",
+            "description": "Determines how the value is input on the command line.",
             "enum": [
                 "arg",
                 "flag",
@@ -232,14 +280,15 @@
             ],
             "type": "string",
             "enumDescriptions": [
-                "",
-                "",
-                ""
-            ]
+                "Passed as a positional argument.",
+                "Passed as a flag.",
+                "Read-only from the `default` value."
+            ],
+            "markdownDescription": "Determines how the value is input on the command line."
         },
         "MatchSource": {
             "title": "MatchSource",
-            "description": "MatchSource determines how match patterns should be applied.",
+            "description": "Determines how regexp patterns should be applied.",
             "enum": [
                 "file",
                 "line"
@@ -248,7 +297,8 @@
             "enumDescriptions": [
                 "Match the entire file.",
                 "Match each line."
-            ]
+            ],
+            "markdownDescription": "Determines how regexp patterns should be applied."
         },
         "MergeType": {
             "title": "MergeType",
@@ -263,11 +313,12 @@
                 "Concatenate source and destination arrays.",
                 "Add source array items if not present in the destination.",
                 "Replace the destination with the source."
-            ]
+            ],
+            "markdownDescription": "Determines merge behavior for arrays - either when modifying them directly\nor when recursively merging objects containing arrays."
         },
         "MissingConfig": {
             "title": "MissingConfig",
-            "description": "MissingConfig determines what to do when destination paths are missing.",
+            "description": "Determines what to do when updating an existing file and\nthe destination path is missing.\n\n_Only used in [UpdateTask](update_task.md#updatetask)._",
             "enum": [
                 "ignore",
                 "touch",
@@ -278,11 +329,12 @@
                 "Do nothing.",
                 "Create an empty file.",
                 "Raise an error."
-            ]
+            ],
+            "markdownDescription": "Determines what to do when updating an existing file and\nthe destination path is missing.\n\n_Only used in [UpdateTask](update_task.md#updatetask)._"
         },
         "PromptConfig": {
             "title": "PromptConfig",
-            "description": "PromptConfig determines when a value should prompt.",
+            "description": "Determines when a value should prompt for input.",
             "enum": [
                 "always",
                 "never",
@@ -291,11 +343,12 @@
             ],
             "type": "string",
             "enumDescriptions": [
-                "",
-                "",
-                "",
-                ""
-            ]
+                "Always prompt.",
+                "Never prompt.",
+                "Only when input OR default is blank/zero.",
+                "Only when not explicitly set via CLI."
+            ],
+            "markdownDescription": "Determines when a value should prompt for input."
         },
         "Source": {
             "title": "Source",
@@ -308,7 +361,8 @@
                 {
                     "$ref": "#/definitions/SourceWithPath"
                 }
-            ]
+            ],
+            "markdownDescription": "The source path or inline content."
         },
         "SourceWithContent": {
             "title": "Source Content",
@@ -319,13 +373,27 @@
             "additionalProperties": false,
             "properties": {
                 "content": {
-                    "description": "Inline content. Can be any type. String keys and/or values will be rendered as templates."
+                    "title": "Content",
+                    "description": "Inline content. Can be any type. String keys and/or values will be rendered as templates.",
+                    "examples": [
+                        "{{ .ValueOne }}",
+                        [
+                            "{{ .ValueOne }}",
+                            "{{ .ValueTwo }}"
+                        ],
+                        {
+                            "foo": "{{ .ValueOne }}"
+                        }
+                    ],
+                    "markdownDescription": "Inline content. Can be any type. String keys and/or values will be rendered as templates."
                 },
                 "content_type": {
-                    "$ref": "#/definitions/FileType"
+                    "$ref": "#/definitions/FileType",
+                    "title": "Content Type"
                 }
             },
-            "type": "object"
+            "type": "object",
+            "markdownDescription": "The source content."
         },
         "SourceWithPath": {
             "title": "Source Path",
@@ -336,14 +404,18 @@
             "additionalProperties": false,
             "properties": {
                 "content_type": {
-                    "$ref": "#/definitions/FileType"
+                    "$ref": "#/definitions/FileType",
+                    "title": "Content Type"
                 },
                 "path": {
-                    "description": "The file path relative to the source directory. Attempts to traverse outside the source directory will raise a runtime error.",
-                    "type": "string"
+                    "title": "Path",
+                    "description": "The file path relative to the generator source directory (./\\_src). Attempts to traverse outside the source directory will raise a runtime error.",
+                    "type": "string",
+                    "markdownDescription": "The file path relative to the generator source directory (./\\_src). Attempts to traverse outside the source directory will raise a runtime error."
                 }
             },
-            "type": "object"
+            "type": "object",
+            "markdownDescription": "The source path."
         },
         "TaskSchema": {
             "title": "Task",
@@ -362,7 +434,8 @@
                 {
                     "$ref": "#/definitions/UpdateTask"
                 }
-            ]
+            ],
+            "markdownDescription": "A generator task."
         },
         "UpdateAction": {
             "title": "Action",
@@ -371,14 +444,17 @@
             "properties": {
                 "merge": {
                     "$ref": "#/definitions/MergeType",
+                    "title": "Merge",
                     "default": "concat"
                 },
                 "type": {
                     "$ref": "#/definitions/Action",
+                    "title": "Type",
                     "default": "replace"
                 }
             },
-            "type": "object"
+            "type": "object",
+            "markdownDescription": "The action to perform on the destination."
         },
         "UpdateMatch": {
             "title": "Match",
@@ -386,44 +462,62 @@
             "additionalProperties": false,
             "properties": {
                 "default": {
-                    "description": "A default value to use if the JSON path expression is not found."
+                    "title": "Default",
+                    "description": "A default value to use if the JSON path expression is not found.",
+                    "markdownDescription": "A default value to use if the JSON path expression is not found."
                 },
                 "pattern": {
-                    "description": "A regexp or JSON path expression.",
+                    "title": "Pattern",
+                    "description": "A regexp (content_type: text) or JSON path expression (content_type: json, yaml). When empty, will match everything.",
                     "default": "",
-                    "type": "string"
+                    "type": "string",
+                    "markdownDescription": "A regexp (content_type: text) or JSON path expression (content_type: json, yaml). When empty, will match everything."
                 },
                 "source": {
                     "$ref": "#/definitions/MatchSource",
+                    "title": "Source",
                     "default": "line"
                 }
             },
-            "type": "object"
+            "type": "object",
+            "markdownDescription": "Target a subset of the destination to update."
         },
         "UpdateTask": {
             "title": "UpdateTask",
             "description": "Updates a file in the destination directory.",
+            "required": [
+                "dst",
+                "src",
+                "type"
+            ],
             "additionalProperties": false,
             "properties": {
                 "action": {
-                    "$ref": "#/definitions/UpdateAction"
+                    "$ref": "#/definitions/UpdateAction",
+                    "title": "Action"
                 },
                 "description": {
+                    "title": "Description",
                     "description": "An optional description of what is being updated.",
-                    "type": "string"
+                    "type": "string",
+                    "markdownDescription": "An optional description of what is being updated."
                 },
                 "dst": {
-                    "$ref": "#/definitions/Destination"
+                    "$ref": "#/definitions/Destination",
+                    "title": "Destination"
                 },
                 "each": {
+                    "title": "Each",
                     "description": "Set to a comma separated value and the task will be executued once per-item. On each iteration, the `_Item` and `_Index` values will be set accordingly.",
                     "examples": [
                         "foo, bar, baz",
                         "{{ .SomeList | join \",\" }}"
                     ],
-                    "type": "string"
+                    "type": "string",
+                    "markdownDescription": "Set to a comma separated value and the task will be executued once per-item. On each iteration, the `_Item` and `_Index` values will be set accordingly."
                 },
                 "if": {
+                    "title": "If",
                     "description": "Determines whether the task should be executed. The value must be [coercible](https://pkg.go.dev/strconv#ParseBool) to a boolean.",
                     "default": "true",
                     "examples": [
@@ -431,21 +525,27 @@
                         "true",
                         "{{ .SomeBool }}"
                     ],
-                    "type": "string"
+                    "type": "string",
+                    "markdownDescription": "Determines whether the task should be executed. The value must be [coercible](https://pkg.go.dev/strconv#ParseBool) to a boolean."
                 },
                 "match": {
-                    "$ref": "#/definitions/UpdateMatch"
+                    "$ref": "#/definitions/UpdateMatch",
+                    "title": "Match"
                 },
                 "src": {
-                    "$ref": "#/definitions/Source"
+                    "$ref": "#/definitions/Source",
+                    "title": "Source"
                 },
                 "type": {
+                    "title": "Type",
                     "description": "Updates a file in the destination directory.",
                     "const": "update",
-                    "type": "string"
+                    "type": "string",
+                    "markdownDescription": "Updates a file in the destination directory."
                 }
             },
-            "type": "object"
+            "type": "object",
+            "markdownDescription": "Updates a file in the destination directory."
         },
         "Value": {
             "title": "Value",
@@ -496,21 +596,27 @@
                     "type": "string"
                 }
             },
-            "type": "object"
+            "type": "object",
+            "markdownDescription": "A generator input value."
         }
     },
     "properties": {
         "description": {
+            "title": "Description",
             "description": "The generator description. The first line is shown when listing all generators. The full description is used when viewing generator help/usage text.",
-            "type": "string"
+            "type": "string",
+            "markdownDescription": "The generator description. The first line is shown when listing all generators. The full description is used when viewing generator help/usage text."
         },
         "name": {
+            "title": "Name",
             "description": "The generator name.",
             "minLength": 1,
             "pattern": "^[\\w:_-]+$",
-            "type": "string"
+            "type": "string",
+            "markdownDescription": "The generator name."
         },
         "tasks": {
+            "title": "Tasks",
             "description": "A list of generator tasks.",
             "items": {
                 "$ref": "#/definitions/TaskSchema"
@@ -518,9 +624,11 @@
             "type": [
                 "array",
                 "null"
-            ]
+            ],
+            "markdownDescription": "A list of generator tasks."
         },
         "values": {
+            "title": "Values",
             "description": "A list of generator input values.",
             "items": {
                 "$ref": "#/definitions/Value"
@@ -528,8 +636,10 @@
             "type": [
                 "array",
                 "null"
-            ]
+            ],
+            "markdownDescription": "A list of generator input values."
         }
     },
-    "type": "object"
+    "type": "object",
+    "markdownDescription": "Stamp generator metadata."
 }

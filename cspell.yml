@@ -25,6 +25,7 @@ ignorePaths:
   - go.mod
   - go.sum
   - "**/testdata/**"
+  - schemas/
 ignoreRegExpList:
   - /import \([^)]+\)/g
 language: en
@@ -52,6 +53,7 @@ words:
   - goldmark
   - gomod
   - goreleaser
+  - gosec
   - gpgconf
   - gpgsign
   - hadolint
@@ -76,6 +78,7 @@ words:
   - signingkey
   - sigstore
   - simplejson
+  - stripmd
   - tablewriter
   - trimpath
   - twelvelabs
