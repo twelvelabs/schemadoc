@@ -177,41 +177,48 @@ func (s *Schema) EnsureDocument() {
 	}
 }
 
-// EnumMarkdown returns the enum and enum descriptions
-// formatted as a markdown list.
-func (s *Schema) EnumMarkdown() string {
+// EnumMarkdownItems returns the .Enum items formatted as Markdown.
+// If .Const is present, will treat that as a virtual enum of one.
+func (s *Schema) EnumMarkdownItems() []string {
+	// Const takes priority...
+	if s.Const.IsSet() {
+		return []string{"`" + s.Const.JSONString() + "`"}
+	}
+	// Otherwise use Enum
 	items := []string{}
-
 	for idx, enum := range s.Enum {
 		desc := ""
 		if idx < len(s.EnumDescriptions) {
 			desc = s.EnumDescriptions[idx]
 		}
-		item := "- `" + enum.String() + "`"
+		item := "`" + enum.JSONString() + "`"
 		if desc != "" {
 			item += ": " + desc
 		}
 		items = append(items, item)
 	}
-
-	if len(items) == 0 {
-		return ""
-	}
-	return strings.Join(items, "\n")
+	return items
 }
 
-// ExamplesMarkdown returns the examples as a markdown list.
-func (s *Schema) ExamplesMarkdown() string {
+// YAMLExamples returns the examples formatted as YAML.
+func (s *Schema) YAMLExamples() []string {
 	items := []string{}
 
 	for _, example := range s.Examples {
-		items = append(items, fmt.Sprintf(" * `%s`", example.YAMLString()))
+		if s.Key != "" {
+			// Wrap the example in a map[string] so that it
+			// ends up getting rendered as `key: value`.
+			// Makes for more copy/paste-able examples.
+			valueOld := example.value
+			valueNew := map[string]any{
+				s.Key: valueOld,
+			}
+			example.value = valueNew
+		}
+		items = append(items, example.YAMLString())
 	}
 
-	if len(items) == 0 {
-		return ""
-	}
-	return strings.Join(items, "\n")
+	return items
 }
 
 // Merge merges fields from other into the receiver.
@@ -271,6 +278,8 @@ func (s *Schema) Merge(other *Schema) {
 			s.If = other.If
 		case "items":
 			s.Items = other.Items
+		case "key":
+			s.Key = other.Key
 		case "markdownDescription":
 			s.MarkdownDescription = other.MarkdownDescription
 		case "maxContains":
@@ -331,6 +340,9 @@ func (s *Schema) Merge(other *Schema) {
 			s.WriteOnly = other.WriteOnly
 		default:
 		}
+	}
+	if other.Parent != nil {
+		s.Parent = other.Parent
 	}
 }
 
@@ -481,6 +493,10 @@ func (a Any) MarshalJSON() ([]byte, error) {
 
 func (a *Any) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &a.value)
+}
+
+func (a Any) IsSet() bool {
+	return a.value != nil
 }
 
 func (a Any) String() string {

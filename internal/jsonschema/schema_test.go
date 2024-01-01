@@ -1,6 +1,7 @@
 package jsonschema
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -143,11 +144,22 @@ func TestSchema_EntityName(t *testing.T) {
 	require.Equal("Bar", schema.EntityName())
 }
 
-func TestSchema_EnumMarkdown(t *testing.T) {
+func TestSchema_EnumMarkdownItems(t *testing.T) {
 	require := require.New(t)
 
 	schema := Schema{}
-	require.Equal("", schema.EnumMarkdown())
+	require.Equal([]string{}, schema.EnumMarkdownItems())
+
+	schema = Schema{
+		Const: Any{"constant value"},
+		Enum: []Any{
+			{"one"},
+			{"two"},
+		},
+	}
+	require.Equal([]string{
+		"`\"constant value\"`",
+	}, schema.EnumMarkdownItems())
 
 	schema = Schema{
 		Enum: []Any{
@@ -155,7 +167,10 @@ func TestSchema_EnumMarkdown(t *testing.T) {
 			{"two"},
 		},
 	}
-	require.Equal("- `one`\n- `two`", schema.EnumMarkdown())
+	require.Equal([]string{
+		"`\"one\"`",
+		"`\"two\"`",
+	}, schema.EnumMarkdownItems())
 
 	schema = Schema{
 		Enum: []Any{
@@ -167,22 +182,47 @@ func TestSchema_EnumMarkdown(t *testing.T) {
 			"the second number",
 		},
 	}
-	require.Equal("- `one`: the first number\n- `two`: the second number", schema.EnumMarkdown())
+	require.Equal([]string{
+		"`\"one\"`: the first number",
+		"`\"two\"`: the second number",
+	}, schema.EnumMarkdownItems())
 }
 
-func TestSchema_ExamplesMarkdown(t *testing.T) {
+func TestSchema_YAMLExamples(t *testing.T) {
 	require := require.New(t)
 
 	schema := Schema{}
-	require.Equal("", schema.ExamplesMarkdown())
+	require.Equal([]string{}, schema.YAMLExamples())
 
 	schema = Schema{
 		Examples: []Any{
-			{"example one"},
-			{"example two"},
+			{value: "string one"},
+			{value: []string{
+				"slice one",
+				"slice two",
+			}},
 		},
 	}
-	require.Equal(" * `example one`\n * `example two`", schema.ExamplesMarkdown())
+	require.Equal([]string{
+		"string one",
+		"- slice one\n- slice two",
+	}, schema.YAMLExamples())
+
+	// Render w/ key when present.
+	schema = Schema{
+		Key: "foo",
+		Examples: []Any{
+			{value: "string one"},
+			{value: []string{
+				"slice one",
+				"slice two",
+			}},
+		},
+	}
+	require.Equal([]string{
+		"foo: string one",
+		"foo:\n    - slice one\n    - slice two",
+	}, schema.YAMLExamples())
 }
 
 func TestSchema_GenPath(t *testing.T) {
@@ -240,10 +280,14 @@ func TestSchema_Merge(t *testing.T) {
 		Document: map[string]any{
 			"description": "schema2 description",
 		},
+		Parent: &Schema{
+			Title: "schema2 parent",
+		},
 	}
 	schema1.Merge(schema2)
 	require.Equal("schema1 title", schema1.Title)
 	require.Equal("schema2 description", schema1.Description)
+	require.Equal("schema2 parent", schema1.Parent.Title)
 
 	// Trigger all attributes to be set so coverage doesn't take a hit.
 	schema1 = &Schema{}
@@ -273,6 +317,7 @@ func TestSchema_Merge(t *testing.T) {
 			"$id":                   true,
 			"if":                    true,
 			"items":                 true,
+			"key":                   true,
 			"markdownDescription":   true,
 			"maxContains":           true,
 			"maximum":               true,
@@ -442,4 +487,47 @@ func TestTypeInfo_Markdown(t *testing.T) {
 		},
 	}
 	require.Equal("[Schema2](#schema2)", ti.Markdown())
+}
+
+func TestAny_String(t *testing.T) {
+	require := require.New(t)
+
+	require.Equal("", (Any{}).String())
+	require.Equal("foo", (Any{"foo"}).String())
+}
+
+func TestAny_JSONString(t *testing.T) {
+	require := require.New(t)
+
+	require.Equal("", (Any{}).JSONString())
+	require.Equal("\"foo\"", (Any{"foo"}).JSONString())
+
+	value := NewErrEncoder(errors.New("boom"))
+	require.Contains((Any{value}).JSONString(), "boom")
+}
+
+func TestAny_YAMLString(t *testing.T) {
+	require := require.New(t)
+
+	require.Equal("", (Any{}).YAMLString())
+	require.Equal("foo", (Any{"foo"}).YAMLString())
+
+	value := NewErrEncoder(errors.New("boom"))
+	require.Contains((Any{value}).YAMLString(), "boom")
+}
+
+func NewErrEncoder(err error) *ErrEncoder {
+	return &ErrEncoder{err}
+}
+
+type ErrEncoder struct {
+	err error
+}
+
+func (e *ErrEncoder) MarshalText() ([]byte, error) {
+	return nil, e.err
+}
+
+func (e *ErrEncoder) UnmarshalText(_ []byte) error {
+	return e.err
 }

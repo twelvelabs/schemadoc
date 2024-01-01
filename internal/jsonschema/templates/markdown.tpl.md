@@ -1,13 +1,3 @@
-{{ define "ConstTpl" -}}
-{{ if . -}}
-
-Allowed Value:
-
-- `{{ . }}`
-
-{{ end -}}
-{{ end -}}
-
 {{ define "DescriptionTpl" -}}
 {{ if . -}}
 
@@ -21,8 +11,10 @@ Allowed Value:
 
 Allowed Values:
 
-{{ . }}
+{{ range $enum := . -}}
 
+- {{ $enum }}
+{{ end -}}
 {{ end -}}
 {{ end -}}
 
@@ -34,7 +26,7 @@ Examples:
 {{ range $example := . -}}
 
 ```yaml
-{{ $example.YAMLString }}
+{{ $example }}
 ```
 
 {{ end -}}
@@ -45,9 +37,8 @@ Examples:
 {{ if . -}}
 | Property | Type | Required | Enum | Default | Description |
 | -------- | ---- | -------- | ---- | ------- | ----------- |
-{{ $propParent := . -}}
-{{ range $key, $prop := $propParent.Properties -}}
-| [`{{ $key }}`](#{{ $key }}) | {{ $prop.TypeInfoMarkdown }} | {{ if $propParent.RequiredKey $key }}✅{{ else }}➖{{ end }} | {{ if $prop.Enum }}✅{{ else }}➖{{ end }} | {{ $prop.Default.JSONString | wrapCode | default "➖" }} | {{ $prop.DescriptionMarkdown | stripMarkdown | firstSentence | toHTML }} |
+{{ range $key, $prop := .Properties -}}
+| [`{{ $prop.Key }}`](#{{ $prop.Key }}) | {{ $prop.TypeInfoMarkdown }} | {{ if $prop.Parent.RequiredKey $prop.Key }}✅{{ else }}➖{{ end }} | {{ if $prop.EnumMarkdownItems }}✅{{ else }}➖{{ end }} | {{ $prop.Default.JSONString | wrapCode | default "➖" }} | {{ $prop.DescriptionMarkdown | stripMarkdown | firstSentence | toHTML }} |
 {{ end -}}
 {{ end -}}
 {{ end -}}
@@ -55,9 +46,8 @@ Examples:
 # {{ .EntityName }}
 
 {{ template "DescriptionTpl" .DescriptionMarkdown }}
-{{ template "ConstTpl" .Const.String }}
-{{ template "EnumTpl" .EnumMarkdown }}
-{{ template "ExamplesTpl" .Examples }}
+{{ template "EnumTpl" .EnumMarkdownItems }}
+{{ template "ExamplesTpl" .YAMLExamples }}
 
 {{ if .OneOf -}}
 
@@ -75,18 +65,16 @@ Examples:
 {{ template "PropertiesTpl" . }}
 
 {{ end -}}
-{{ $root := . -}}
 {{ range $key, $prop := .Properties -}}
 
-### `{{ $key }}`
+### `{{ $prop.Key }}`
 
 | Type | Required | Enum | Default |
 | ---- | -------- | ---- | ------- |
-| {{ $prop.TypeInfoMarkdown }} | {{ if $root.RequiredKey $key }}✅{{ else }}➖{{ end }} | {{ if $prop.Enum }}✅{{ else }}➖{{ end }} | {{ $prop.Default.JSONString | wrapCode | default "➖" }} |
+| {{ $prop.TypeInfoMarkdown }} | {{ if $prop.Parent.RequiredKey $prop.Key }}✅{{ else }}➖{{ end }} | {{ if $prop.EnumMarkdownItems }}✅{{ else }}➖{{ end }} | {{ $prop.Default.JSONString | wrapCode | default "➖" }} |
 
 {{ template "DescriptionTpl" $prop.DescriptionMarkdown }}
-{{ template "ConstTpl" $prop.Const.String }}
-{{ template "EnumTpl" $prop.EnumMarkdown }}
-{{ template "ExamplesTpl" $prop.Examples }}
+{{ template "EnumTpl" $prop.EnumMarkdownItems }}
+{{ template "ExamplesTpl" $prop.YAMLExamples }}
 
 {{ end -}}
