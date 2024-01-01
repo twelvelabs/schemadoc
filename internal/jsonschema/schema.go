@@ -177,27 +177,27 @@ func (s *Schema) EnsureDocument() {
 	}
 }
 
-// EnumMarkdown returns the enum and enum descriptions
-// formatted as a markdown list.
-func (s *Schema) EnumMarkdown() string {
+// EnumMarkdownItems returns the .Enum items formatted as Markdown.
+// If .Const is present, will treat that as a virtual enum of one.
+func (s *Schema) EnumMarkdownItems() []string {
+	// Const takes priority...
+	if s.Const.IsSet() {
+		return []string{"`" + s.Const.JSONString() + "`"}
+	}
+	// Otherwise use Enum
 	items := []string{}
-
 	for idx, enum := range s.Enum {
 		desc := ""
 		if idx < len(s.EnumDescriptions) {
 			desc = s.EnumDescriptions[idx]
 		}
-		item := "- `" + enum.String() + "`"
+		item := "`" + enum.JSONString() + "`"
 		if desc != "" {
 			item += ": " + desc
 		}
 		items = append(items, item)
 	}
-
-	if len(items) == 0 {
-		return ""
-	}
-	return strings.Join(items, "\n")
+	return items
 }
 
 // YAMLExamples returns the examples formatted as YAML.
@@ -493,6 +493,10 @@ func (a Any) MarshalJSON() ([]byte, error) {
 
 func (a *Any) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &a.value)
+}
+
+func (a Any) IsSet() bool {
+	return a.value != nil
 }
 
 func (a Any) String() string {
