@@ -34,7 +34,7 @@ Examples:
 {{ range $example := . -}}
 
 ```yaml
-{{ $example.YAMLString }}
+{{ $example }}
 ```
 
 {{ end -}}
@@ -85,8 +85,6 @@ Examples:
 | {{ $prop.TypeInfoMarkdown }} | {{ if $root.RequiredKey $key }}✅{{ else }}➖{{ end }} | {{ if $prop.Enum }}✅{{ else }}➖{{ end }} | {{ $prop.Default.JSONString | wrapCode | default "➖" }} |
 
 {{ template "DescriptionTpl" $prop.DescriptionMarkdown }}
-{{ template "ConstTpl" $prop.Const.String }}
-{{ template "EnumTpl" $prop.EnumMarkdown }}
-{{ template "ExamplesTpl" $prop.Examples }}
+{{ template "ExamplesTpl" $prop.YAMLExamples }}
 
 {{ end -}}

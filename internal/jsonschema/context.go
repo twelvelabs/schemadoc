@@ -164,8 +164,8 @@ func resolveSubSchemas(schema *Schema) (*Schema, error) {
 		*subSchema = *tmp
 	}
 
-	for _, subSchema := range schema.Properties {
-		// subSchema.Key = key
+	for key, subSchema := range schema.Properties {
+		subSchema.Key = key
 		subSchema.Parent = schema
 		tmp, err := resolveRef(subSchema)
 		if err != nil {

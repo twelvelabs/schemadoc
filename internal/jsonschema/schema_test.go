@@ -170,19 +170,41 @@ func TestSchema_EnumMarkdown(t *testing.T) {
 	require.Equal("- `one`: the first number\n- `two`: the second number", schema.EnumMarkdown())
 }
 
-func TestSchema_ExamplesMarkdown(t *testing.T) {
+func TestSchema_YAMLExamples(t *testing.T) {
 	require := require.New(t)
 
 	schema := Schema{}
-	require.Equal("", schema.ExamplesMarkdown())
+	require.Equal([]string{}, schema.YAMLExamples())
 
 	schema = Schema{
 		Examples: []Any{
-			{"example one"},
-			{"example two"},
+			{value: "string one"},
+			{value: []string{
+				"slice one",
+				"slice two",
+			}},
 		},
 	}
-	require.Equal(" * `example one`\n * `example two`", schema.ExamplesMarkdown())
+	require.Equal([]string{
+		"string one",
+		"- slice one\n- slice two",
+	}, schema.YAMLExamples())
+
+	// Render w/ key when present.
+	schema = Schema{
+		Key: "foo",
+		Examples: []Any{
+			{value: "string one"},
+			{value: []string{
+				"slice one",
+				"slice two",
+			}},
+		},
+	}
+	require.Equal([]string{
+		"foo: string one",
+		"foo:\n    - slice one\n    - slice two",
+	}, schema.YAMLExamples())
 }
 
 func TestSchema_GenPath(t *testing.T) {
@@ -240,10 +262,14 @@ func TestSchema_Merge(t *testing.T) {
 		Document: map[string]any{
 			"description": "schema2 description",
 		},
+		Parent: &Schema{
+			Title: "schema2 parent",
+		},
 	}
 	schema1.Merge(schema2)
 	require.Equal("schema1 title", schema1.Title)
 	require.Equal("schema2 description", schema1.Description)
+	require.Equal("schema2 parent", schema1.Parent.Title)
 
 	// Trigger all attributes to be set so coverage doesn't take a hit.
 	schema1 = &Schema{}
@@ -273,6 +299,7 @@ func TestSchema_Merge(t *testing.T) {
 			"$id":                   true,
 			"if":                    true,
 			"items":                 true,
+			"key":                   true,
 			"markdownDescription":   true,
 			"maxContains":           true,
 			"maximum":               true,
