@@ -12,7 +12,7 @@ require (
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.4
-	github.com/tdewolff/minify/v2 v2.20.10
+	github.com/tdewolff/minify/v2 v2.20.12
 	github.com/twelvelabs/termite v0.13.1
 	github.com/writeas/go-strip-markdown v2.0.1+incompatible
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190905194746-02993c407bfb
