@@ -11,7 +11,7 @@ require (
 	github.com/sebdah/goldie/v2 v2.5.3
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	github.com/tdewolff/minify/v2 v2.20.16
 	github.com/twelvelabs/termite v0.13.1
 	github.com/writeas/go-strip-markdown v2.0.1+incompatible
