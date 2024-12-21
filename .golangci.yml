@@ -4,7 +4,7 @@ linters:
     - cyclop
     - depguard
     - dupl
-    - goerr113
+    - err113
     - exhaustruct
     - forbidigo
     - forcetypeassert
@@ -16,9 +16,13 @@ linters:
     - godox
     - gofumpt
     - gomnd
+    - govet
     - ireturn
+    - mnd
     - nlreturn
     - paralleltest
+    - perfsprint
+    - recvcheck
     - tagalign
     - tagliatelle
     - testifylint
@@ -26,17 +30,12 @@ linters:
     - varnamelen
     - wrapcheck
     - wsl
+    # disabled because they spew warnings re: generics
+    - rowserrcheck
+    - wastedassign
     # deprecated
-    - exhaustivestruct
-    - deadcode
-    - golint
-    - ifshort
-    - interfacer
-    - maligned
-    - nosnakecase
-    - scopelint
-    - structcheck
-    - varcheck
+    - execinquery
+    - exportloopref
 
 linters-settings:
   exhaustive:
@@ -48,12 +47,16 @@ linters-settings:
       - default # Default section: contains all imports that could not be matched to another section type.
       - prefix(github.com/twelvelabs/schemadoc) # Custom section: groups all imports with the specified Prefix.
 
-  gomoddirectives:
-    replace-allow-list:
-      - github.com/imdario/mergo
+  goconst:
+    ignore-tests: true
 
   lll:
     line-length: 120
+
+  revive:
+    rules:
+      - name: unused-parameter
+        disabled: true
 
   staticcheck:
     checks:

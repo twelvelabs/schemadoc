@@ -60,6 +60,7 @@ words:
   - ifeq
   - ifneq
   - jsonschema
+  - linuxbrew
   - mapset
   - markdownlint
   - minifier

@@ -3,6 +3,7 @@ package cmd
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -137,7 +138,7 @@ func (a *GenAction) setup() error {
 		msg = strings.ReplaceAll(msg, "OutDir", `'--out'`)
 		msg = strings.ReplaceAll(msg, "OutFile", `'--outfile'`)
 		msg = strings.ReplaceAll(msg, "field", "flag")
-		return fmt.Errorf(msg)
+		return errors.New(msg)
 	}
 
 	info, err := os.Stat(a.InPath)
