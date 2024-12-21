@@ -2,6 +2,7 @@ package cmd
 
 import (
 	_ "embed"
+	"fmt"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -18,7 +19,7 @@ func NewVersionCmd(app *core.App) *cobra.Command {
 		Short: "Show full version info",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			app.UI.Out(asciiArt)
+			fmt.Fprint(app.IO.Out, asciiArt)
 			app.UI.Out("Version: %s\n", app.Meta.Version)
 			app.UI.Out("GOOS: %s\n", app.Meta.GOOS)
 			app.UI.Out("GOARCH: %s\n", app.Meta.GOARCH)

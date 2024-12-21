@@ -7,7 +7,9 @@ goreleaser build --clean --snapshot --single-target
 # used by install/uninstall scripts.
 # Allows us to be resilient to config changes.
 
-artifact_path=$(jq -r '.[0].path' dist/artifacts.json)
+artifact_path=$(
+    jq -r '.[] | select(.type == "Binary") | .path' dist/artifacts.json
+)
 artifact_name=$(basename "${artifact_path}")
 brew_prefix=$(brew --prefix)
 
