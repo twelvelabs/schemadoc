@@ -56,7 +56,7 @@ func ConfigPath(args []string) (string, error) {
 	fs := pflag.NewFlagSet("config-args", pflag.ContinueOnError)
 	fs.StringVarP(&path, "config", "c", path, "")
 	// Ignore all the flags used by the main Cobra flagset.
-	fs.ParseErrorsWhitelist.UnknownFlags = true
+	fs.ParseErrorsAllowlist.UnknownFlags = true
 	// Suppress the default usage shown when the `--help` flag is present
 	// (otherwise we end up w/ a duplicate of what Cobra shows).
 	fs.Usage = func() {}
