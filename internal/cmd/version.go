@@ -19,7 +19,7 @@ func NewVersionCmd(app *core.App) *cobra.Command {
 		Short: "Show full version info",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			fmt.Fprint(app.IO.Out, asciiArt)
+			_, _ = fmt.Fprint(app.IO.Out, asciiArt)
 			app.UI.Out("Version: %s\n", app.Meta.Version)
 			app.UI.Out("GOOS: %s\n", app.Meta.GOOS)
 			app.UI.Out("GOARCH: %s\n", app.Meta.GOARCH)

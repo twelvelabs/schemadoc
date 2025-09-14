@@ -1,28 +1,29 @@
+version: "2"
+
 linters:
-  enable-all: true
+  default: all
   disable:
+    - containedctx
     - cyclop
     - depguard
-    - dupl
     - err113
     - exhaustruct
     - forbidigo
     - forcetypeassert
+    - funcorder
     - funlen
-    - gochecknoinits
-    - gochecknoglobals
     - gocognit
     - gocyclo
     - godox
-    - gofumpt
-    - gomnd
-    - govet
+    - gochecknoglobals
+    - gochecknoinits
     - ireturn
     - mnd
     - nlreturn
+    - noinlineerr
     - paralleltest
     - perfsprint
-    - recvcheck
+    - revive
     - tagalign
     - tagliatelle
     - testifylint
@@ -30,39 +31,24 @@ linters:
     - varnamelen
     - wrapcheck
     - wsl
-    # disabled because they spew warnings re: generics
-    - rowserrcheck
-    - wastedassign
-    # deprecated
-    - execinquery
-    - exportloopref
+    - wsl_v5
 
-linters-settings:
-  exhaustive:
-    default-signifies-exhaustive: true
-
-  gci:
-    sections:
-      - standard # Standard section: captures all standard packages.
-      - default # Default section: contains all imports that could not be matched to another section type.
-      - prefix(github.com/twelvelabs/schemadoc) # Custom section: groups all imports with the specified Prefix.
-
-  goconst:
-    ignore-tests: true
-
-  lll:
-    line-length: 120
-
-  revive:
+  exclusions:
     rules:
-      - name: unused-parameter
-        disabled: true
+      - path: _test.go
+        linters:
+          - goconst
+      - source: "^\\s*defer\\s+"
+        linters:
+          - errcheck
+          - staticcheck
 
-  staticcheck:
-    checks:
-      - "all"
-      - "-SA5001"
+  settings:
+    exhaustive:
+      default-signifies-exhaustive: true
+
+    lll:
+      line-length: 120
 
 severity:
-  case-sensitive: false
-  default-severity: error
+  default: error

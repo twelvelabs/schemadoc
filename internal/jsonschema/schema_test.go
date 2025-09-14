@@ -492,28 +492,28 @@ func TestTypeInfo_Markdown(t *testing.T) {
 func TestAny_String(t *testing.T) {
 	require := require.New(t)
 
-	require.Equal("", (Any{}).String())
-	require.Equal("foo", (Any{"foo"}).String())
+	require.Equal("", (&Any{}).String())
+	require.Equal("foo", (&Any{"foo"}).String())
 }
 
 func TestAny_JSONString(t *testing.T) {
 	require := require.New(t)
 
-	require.Equal("", (Any{}).JSONString())
-	require.Equal("\"foo\"", (Any{"foo"}).JSONString())
+	require.Equal("", (&Any{}).JSONString())
+	require.Equal("\"foo\"", (&Any{"foo"}).JSONString())
 
 	value := NewErrEncoder(errors.New("boom"))
-	require.Contains((Any{value}).JSONString(), "boom")
+	require.Contains((&Any{value}).JSONString(), "boom")
 }
 
 func TestAny_YAMLString(t *testing.T) {
 	require := require.New(t)
 
-	require.Equal("", (Any{}).YAMLString())
-	require.Equal("foo", (Any{"foo"}).YAMLString())
+	require.Equal("", (&Any{}).YAMLString())
+	require.Equal("foo", (&Any{"foo"}).YAMLString())
 
 	value := NewErrEncoder(errors.New("boom"))
-	require.Contains((Any{value}).YAMLString(), "boom")
+	require.Contains((&Any{value}).YAMLString(), "boom")
 }
 
 func NewErrEncoder(err error) *ErrEncoder {

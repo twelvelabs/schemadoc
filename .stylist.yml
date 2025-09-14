@@ -1,8 +1,3 @@
-excludes:
-  - build/**
-  - dist/**
-  - out/**
-  - .cspellcache
 output:
   show_context: true
   show_url: true
@@ -15,6 +10,8 @@ processors:
   - preset: shfmt
   - preset: gofmt
   - preset: golangci-lint
+    check:
+      command: "golangci-lint run --output.json.path=stdout --show-stats=false"
 
   - name: actionlint
     includes:
@@ -34,12 +31,3 @@ processors:
         rule_id: "{{ .kind }}"
         rule_name: "{{ .kind }}"
         rule_description: "{{ .message }}"
-
-  - name: pin-github-action
-    includes:
-      - ".github/workflows/*.{yaml,yml}"
-    fix:
-      command: pin-github-action
-      input: variadic
-      output: stdout
-      format: none

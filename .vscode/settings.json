@@ -19,11 +19,17 @@
         "--template=testify"
     ],
     "go.lintOnSave": "package",
-    "go.lintTool": "golangci-lint",
+    "go.lintTool": "golangci-lint-v2",
+    "go.lintFlags": [
+        "--path-mode=abs",
+    ],
     "go.useLanguageServer": true,
     "gopls": {
         "local": "github.com/twelvelabs/schemadoc",
-        "ui.semanticTokens": true
+        "ui.semanticTokens": true,
+        "ui.diagnostic.analyses": {
+            "SA5001": false
+        }
     },
     "shellcheck.customArgs": [
         "--check-sourced",
