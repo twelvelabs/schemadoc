@@ -76,7 +76,7 @@ func TestFileLoader(t *testing.T) {
 	reader, err := NewFileLoader().Load(uri)
 	require.NoError(err)
 
-	expected, err := os.ReadFile(path)
+	expected, err := os.ReadFile(path) //nolint:gosec
 	require.NoError(err)
 
 	actual, err := io.ReadAll(reader)

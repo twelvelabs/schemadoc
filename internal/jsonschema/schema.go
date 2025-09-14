@@ -487,7 +487,7 @@ type Any struct {
 	value any
 }
 
-func (a Any) MarshalJSON() ([]byte, error) {
+func (a *Any) MarshalJSON() ([]byte, error) {
 	return json.Marshal(a.value)
 }
 
@@ -495,18 +495,18 @@ func (a *Any) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &a.value)
 }
 
-func (a Any) IsSet() bool {
+func (a *Any) IsSet() bool {
 	return a.value != nil
 }
 
-func (a Any) String() string {
+func (a *Any) String() string {
 	if a.value == nil {
 		return ""
 	}
 	return fmt.Sprintf("%v", a.value)
 }
 
-func (a Any) JSONString() string {
+func (a *Any) JSONString() string {
 	if a.value == nil {
 		return ""
 	}
@@ -517,7 +517,7 @@ func (a Any) JSONString() string {
 	return strings.TrimSpace(string(serialized))
 }
 
-func (a Any) YAMLString() string {
+func (a *Any) YAMLString() string {
 	if a.value == nil {
 		return ""
 	}

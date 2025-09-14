@@ -63,7 +63,7 @@ func (a *App) Init() error {
 	start := time.Now()
 
 	if !a.Config.Color {
-		os.Setenv("NO_COLOR", "1")
+		_ = os.Setenv("NO_COLOR", "1")
 	}
 
 	a.IO = ui.NewIOStreams()
