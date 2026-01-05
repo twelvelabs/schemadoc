@@ -16,7 +16,7 @@ require (
 	github.com/twelvelabs/termite v0.13.2
 	github.com/writeas/go-strip-markdown v2.0.1+incompatible
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190905194746-02993c407bfb
-	github.com/yuin/goldmark v1.7.13
+	github.com/yuin/goldmark v1.7.14
 	gopkg.in/yaml.v3 v3.0.1
 )
 
